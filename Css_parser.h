@@ -1,9 +1,6 @@
 #ifndef INC_1_CSS_CSS_PARSER_H
 #define INC_1_CSS_CSS_PARSER_H
-
-#include "mstl.hxx"
-
-using namespace mstl;
+#include "Linkedlist.h"
 
 class Css_parser {
 
