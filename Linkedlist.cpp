@@ -35,6 +35,10 @@ Mstring& Mstring::add_ms(const char* user_char) {
     return *this;
 }
 
+void Mstring::remove_last_char() {
+    number_of_elements--;
+}
+
 Mstring& Mstring::operator=(const Mstring& user_mstring){
     delete[] main_buffer;
 
@@ -123,7 +127,6 @@ Mstring& Mstring::operator+=(const Mstring& user_mstring){
     return *this;
 }
 
-
 std::ostream& operator<<(std::ostream &os, const Mstring &mstring){
 
     for (int i = 0; i < mstring.size(); i++) {
@@ -156,6 +159,14 @@ void Node::add_property(const char* user_property) {
 void Node::add_value(const char* user_value) {
     Mstring temp(user_value);
     values.push_back(temp);
+}
+
+int Node::find_attribute(const Mstring& user_attribute) {
+    for (int i = 0; i < selectors.size(); i++) {
+        if (selectors[i] == user_attribute) return i;
+    }
+
+    return 0;
 }
 
 LinkedList::LinkedList() {
@@ -220,7 +231,19 @@ void LinkedList::pop(size_t index) {
     std::cout << "deleted";
 }
 
-Node& LinkedList::operator[](size_t index) {
+int LinkedList::size() {
+    int size = 0;
+    Node* current_node = first;
+
+    while (current_node != nullptr) {
+        size++;
+        current_node = current_node->next;
+    }
+
+    return size;
+}
+
+Node* LinkedList::operator[](size_t index) {
     Node* index_node = first;
 
     for(int i = 0; i < index; i++) {
@@ -231,5 +254,5 @@ Node& LinkedList::operator[](size_t index) {
         index_node = index_node->next;
     }
 
-    return *index_node;
+    return index_node;
 }

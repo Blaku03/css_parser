@@ -5,11 +5,29 @@
 class Css_parser {
 
     LinkedList sections;
-    bool commands = false;
+    Node* curr_section = nullptr;
     Mstring input;
 
+    bool commands = false;
+    bool attributes = false;
+    bool attribute_reoccurance = false;
+
+    char main_command;
+    Mstring command_part1;
+    int command_part1_digit = 0;
+    Mstring command_part2;
+    int command_part2_digit = 0;
+    int command_part_counter = 0;
+
+    char input_char;
+    char temp_input[2] = { 0 };
+
 public:
+    void read_css();
+    void read_commands();
+    void read_char();
     void start();
+    void assign_type_command(Mstring& user_command, int& command_part_digit);
 };
 
 
