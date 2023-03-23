@@ -228,6 +228,7 @@ bool LinkedList::pop_front() {
     Node* next_node = first->next;
     delete first;
     first = next_node;
+    if(first == nullptr) return true;
     first->previous = nullptr;
 
     return true;
@@ -260,6 +261,8 @@ bool LinkedList::pop(size_t index) {
 
 int LinkedList::size() {
     int size = 0;
+    if(first == nullptr) return 0;
+
     Node* current_node = first;
 
     while (current_node != nullptr) {

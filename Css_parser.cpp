@@ -9,6 +9,7 @@ void Css_parser::read_css() {
 
     if(input_char == '{'){
         attributes = true;
+        selectors = false;
         input.remove_last_char();
         curr_section->selectors.push_back(input);
         input.clear();
@@ -16,6 +17,7 @@ void Css_parser::read_css() {
 
     if(input_char == '}'){
         attributes = false;
+        selectors = true;
         input.clear();
         sections.add_section();
         curr_section = curr_section->next;
@@ -31,6 +33,8 @@ void Css_parser::read_css() {
     }
 
     if(input_char == ':'){
+        if(selectors) return;
+
         input.remove_last_char();
 
         attribute_reoccurance = curr_section->find_property(input);
@@ -48,6 +52,14 @@ void Css_parser::read_css() {
 void Css_parser::read_commands() {
     if(input == "****"){
         commands = false;
+        //check if everything was deleted
+        if(sections.size() == 0){
+            sections.add_section();
+            curr_section = sections.first;
+            input.clear();
+            return;
+        }
+
         curr_section = sections.last;
         sections.add_section();
         curr_section = curr_section->next;
@@ -208,10 +220,8 @@ void Css_parser::handle_rest_of_commands() {
                     }
                 }
             }
-            if(count > 0){
-                std::cout<<command_part1<<","<<main_command<<",? == ";
-                std::cout<<count<<"\n";
-            }
+            std::cout<<command_part1<<","<<main_command<<",? == ";
+            std::cout<<count<<"\n";
         }
     }
 
@@ -232,6 +242,7 @@ void Css_parser::handle_rest_of_commands() {
 
     if(main_command == 'D'){
         if(command_part2 == "*"){
+            if(sections.size() == 0) return;
             if(sections.pop(command_part1_digit - 1)){
                 std::cout<<command_part1_digit<<","<<main_command<<","<<command_part2<<" == deleted\n";
                 return;

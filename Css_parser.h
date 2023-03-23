@@ -10,6 +10,7 @@ class Css_parser {
 
     bool commands = false;
     bool attributes = false;
+    bool selectors = true;
     int attribute_reoccurance = -1;
 
     char main_command;
