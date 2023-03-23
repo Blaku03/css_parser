@@ -72,7 +72,6 @@ void Css_parser::read_commands() {
            input.remove_last_char();
            assign_type_command(input, command_part1_digit);
            command_part1 = input;
-           if(command_part1.size() > 0) command_part1.remove_last_char();
            input.clear();
            return;
         }
@@ -209,7 +208,9 @@ void Css_parser::handle_rest_of_commands() {
        for(int i = sections.size() - 1; i >= 0; i--){
            for(int j = 0; j < sections[i]->selectors.size(); j++){
                if(sections[i]->selectors[j] == command_part1){
+                   std::cout<<command_part1<<","<<main_command<<","<<command_part2<<" == ";
                    std::cout<<sections[i]->values[sections[i]->find_property(command_part2)];
+                   return;
                }
            }
        }
@@ -217,8 +218,9 @@ void Css_parser::handle_rest_of_commands() {
 
     if(main_command == 'D'){
         if(command_part2 == "*"){
-            delete sections[--command_part1_digit];
-            std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
+            sections.pop(command_part1_digit - 1);
+            std::cout<<command_part1_digit<<","<<main_command<<","<<command_part2<<" == deleted\n";
+            return;
         }
 
         if(command_part2.size() > 0){
@@ -232,9 +234,12 @@ void Css_parser::assign_type_command(Mstring &user_command, int& command_part_di
     command_part_digit = 0;
     int pow_10 = 1;
     for(int i = user_command.size() - 1; i >= 0; i--){
-        if(!isdigit(user_command[i])) return;
-           command_part_digit += (user_command[i] - '0') * pow_10;
-              pow_10 *= 10;
+        if(!isdigit(user_command[i])){
+            command_part_digit = 0;
+            return;
+        }
+        command_part_digit += (user_command[i] - '0') * pow_10;
+        pow_10 *= 10;
     }
 
     user_command.clear();

@@ -228,17 +228,26 @@ void LinkedList::pop_front() {
 
 void LinkedList::pop(size_t index) {
     if (first == nullptr) return;
+    if(index == 0) {
+        pop_front();
+        return;
+    }
 
     Node *current_node = first;
 
     for (int i = 0; i < index; i++) {
+        if(current_node == nullptr) return;
         current_node = current_node->next;
+    }
+
+    if(current_node == last) {
+        pop_back();
+        return;
     }
 
     current_node->previous->next = current_node->next;
     current_node->next->previous = current_node->previous;
     delete current_node;
-    std::cout << "deleted";
 }
 
 int LinkedList::size() {
