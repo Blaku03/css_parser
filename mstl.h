@@ -27,6 +27,7 @@
 
         T pop();
         T pop_front();
+        T pop_index(size_t index_of_element);
 
         //Chaining methods below doesn't make much sense
         void shrink_to_fit();

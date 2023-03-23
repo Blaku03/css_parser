@@ -103,6 +103,30 @@ T Mvector<T>::pop() {
 }
 
 template<typename T>
+T Mvector<T>::pop_index(size_t index_of_element){
+
+    if (index_of_element < number_of_elements) {
+        T *helper_buffer = new T[current_size];
+        T popped_element = main_buffer[index_of_element];
+
+        for (int i = 0; i < index_of_element; i++) {
+            *(helper_buffer + i) = *(main_buffer + i);
+        }
+
+        for (int i = index_of_element + 1; i < number_of_elements; i++) {
+            *(helper_buffer + i - 1) = *(main_buffer + i);
+        }
+
+        number_of_elements--;
+        delete[] main_buffer;
+        main_buffer = helper_buffer;
+        return popped_element;
+    }
+    std::cout << "ERROR: INDEX GIVEN IS NOT WITHIN THE VECTOR\n";
+    exit(99);
+}
+
+template<typename T>
 T Mvector<T>::pop_front() {
     if(number_of_elements == 0) return 0;
 

@@ -27,6 +27,7 @@ public:
     void read_commands();
     void read_char();
     void start();
+    void handle_rest_of_commands();
     void assign_type_command(Mstring& user_command, int& command_part_digit);
 };
 

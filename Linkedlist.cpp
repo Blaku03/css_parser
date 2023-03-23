@@ -36,6 +36,7 @@ Mstring& Mstring::add_ms(const char* user_char) {
 }
 
 void Mstring::remove_last_char() {
+    main_buffer[number_of_elements - 1] = '\0';
     number_of_elements--;
 }
 
@@ -161,12 +162,21 @@ void Node::add_value(const char* user_value) {
     values.push_back(temp);
 }
 
-int Node::find_attribute(const Mstring& user_attribute) {
-    for (int i = 0; i < selectors.size(); i++) {
-        if (selectors[i] == user_attribute) return i;
+int Node::find_property(const Mstring& user_attribute) {
+    for (int i = 0; i < properties.size(); i++) {
+        if (properties[i] == user_attribute) return i;
     }
 
     return 0;
+}
+bool Node::delete_property(const Mstring &user_property) {
+    int index = find_property(user_property);
+
+    if (index == 0) return false;
+
+    properties.pop_index(index);
+
+    return true;
 }
 
 LinkedList::LinkedList() {

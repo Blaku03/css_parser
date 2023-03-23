@@ -41,7 +41,8 @@ public:
     void add_selector(const char* user_selector);
     void add_value(const char* user_value);
     void add_property(const char* user_property);
-    int find_attribute(const Mstring& user_attribute);
+    int find_property(const Mstring& user_attribute);
+    bool delete_property(const Mstring& user_property);
 };
 
 class LinkedList {
