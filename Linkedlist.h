@@ -46,18 +46,18 @@ public:
 };
 
 class LinkedList {
+public:
     Node* first;
     Node* last;
 
-public:
     LinkedList();
     ~LinkedList();
 
     void add_section();
 
-    void pop_back();
-    void pop_front();
-    void pop(size_t index);
+    bool pop_back();
+    bool pop_front();
+    bool pop(size_t index);
     int size();
 
     Node* operator[](size_t index);

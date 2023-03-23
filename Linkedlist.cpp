@@ -167,18 +167,15 @@ int Node::find_property(const Mstring& user_attribute) {
         if (properties[i] == user_attribute) return i;
     }
 
-    throw std::out_of_range("Property not found");
+    return -1;
 }
 
 bool Node::delete_property(const Mstring &user_property) {
    int index = 0;
 
-    try{
-        index = find_property(user_property);
-    }
-    catch (std::out_of_range& e){
-        return false;
-    }
+    index = find_property(user_property);
+
+    if(index < 0) return false;
 
     properties.pop_index(index);
 
@@ -214,48 +211,51 @@ void LinkedList::add_section() {
     }
 }
 
-void LinkedList::pop_back() {
-    if (first == nullptr) return;
+bool LinkedList::pop_back() {
+    if (first == nullptr) return false;
 
     Node* previous_node = last->previous;
     delete last;
     last = previous_node;
     last->next = nullptr;
+
+    return true;
 }
 
-void LinkedList::pop_front() {
-    if (first == nullptr) return;
+bool LinkedList::pop_front() {
+    if (first == nullptr) return false;
 
     Node* next_node = first->next;
     delete first;
     first = next_node;
     first->previous = nullptr;
+
+    return true;
 }
 
-void LinkedList::pop(size_t index) {
-    if (first == nullptr) return;
+bool LinkedList::pop(size_t index) {
+    if (first == nullptr) return false;
     if(index == 0) {
-        pop_front();
-        return;
+        return pop_front();
     }
 
     Node *current_node = first;
 
     for (int i = 0; i < index; i++) {
         if(current_node == nullptr){
-            throw std::out_of_range("Index out of range");
+            return false;
         }
         current_node = current_node->next;
     }
 
     if(current_node == last) {
-        pop_back();
-        return;
+        return pop_back();
     }
 
     current_node->previous->next = current_node->next;
     current_node->next->previous = current_node->previous;
     delete current_node;
+    return true;
 }
 
 int LinkedList::size() {
@@ -275,7 +275,7 @@ Node* LinkedList::operator[](size_t index) {
 
     for(int i = 0; i < index; i++) {
         if(index_node == nullptr){
-            throw std::out_of_range("Index out of range");
+            return nullptr;
         }
 
         index_node = index_node->next;

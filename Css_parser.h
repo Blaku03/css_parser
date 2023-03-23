@@ -10,7 +10,7 @@ class Css_parser {
 
     bool commands = false;
     bool attributes = false;
-    bool attribute_reoccurance = false;
+    int attribute_reoccurance = -1;
 
     char main_command;
     Mstring command_part1;
@@ -26,6 +26,7 @@ public:
     void read_css();
     void read_commands();
     void read_char();
+    void read_attribute();
     void start();
     void handle_rest_of_commands();
     void assign_type_command(Mstring& user_command, int& command_part_digit);
