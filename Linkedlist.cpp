@@ -167,12 +167,18 @@ int Node::find_property(const Mstring& user_attribute) {
         if (properties[i] == user_attribute) return i;
     }
 
-    return 0;
+    throw std::out_of_range("Property not found");
 }
-bool Node::delete_property(const Mstring &user_property) {
-    int index = find_property(user_property);
 
-    if (index == 0) return false;
+bool Node::delete_property(const Mstring &user_property) {
+   int index = 0;
+
+    try{
+        index = find_property(user_property);
+    }
+    catch (std::out_of_range& e){
+        return false;
+    }
 
     properties.pop_index(index);
 
@@ -236,7 +242,9 @@ void LinkedList::pop(size_t index) {
     Node *current_node = first;
 
     for (int i = 0; i < index; i++) {
-        if(current_node == nullptr) return;
+        if(current_node == nullptr){
+            throw std::out_of_range("Index out of range");
+        }
         current_node = current_node->next;
     }
 

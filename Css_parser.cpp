@@ -4,7 +4,6 @@ void Css_parser::read_css() {
     if(input == "????"){
         commands = true;
         input.clear();
-        std::cout<<"Commands: "<<std::endl;
     }
 
     if(input_char == '{'){
@@ -32,12 +31,15 @@ void Css_parser::read_css() {
 
     if(input_char == ':'){
         input.remove_last_char();
-        if(curr_section->find_property(input)){
-            attribute_reoccurance = true;
+        try {
+            bool temp = curr_section->find_property(input);
+            if(temp){
+                attribute_reoccurance = true;
+            }
         }
-        else{
-            curr_section->properties.push_back(input);
-        }
+        catch(std::out_of_range& e){}
+
+        curr_section->properties.push_back(input);
         input.clear();
     }
 
@@ -57,7 +59,6 @@ void Css_parser::read_commands() {
     if(input == "****"){
         commands = false;
         input.clear();
-        std::cout<<"Commands ended"<<std::endl;
     }
 
     if(input_char == '?' && command_part_counter < 2){
@@ -174,58 +175,81 @@ void Css_parser::handle_rest_of_commands() {
                 std::cout<<sections[--command_part1_digit]->properties.size()<<"\n";
                 return;
             }
-            catch(std::exception& e){
+            catch(std::out_of_range& e){
                 return;
             }
         }
 
         if(command_part1_digit > 0 && command_part2.size() > 0){
             try{
-                std::cout<<command_part1_digit<<","<<main_command<<","<<command_part2<<" == ";
-                std::cout<<sections[--command_part1_digit]->values[sections[command_part1_digit]->find_property(command_part2)]<<"\n";
+                Mstring ans = sections[--command_part1_digit]->values[sections[command_part1_digit]->find_property(command_part2)];
+                std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == ";
+                std::cout<<ans<<"\n";
                 return;
             }
-            catch(std::exception& e){
+            catch(std::out_of_range& e){
                 return;
             }
         }
 
         if(command_part1.size() > 0 && command_part2 == "?"){
             int count = 0;
-            std::cout<<command_part1<<","<<main_command<<",? == ";
-            for(int i = 0; i < sections.size(); i++){
-                for(int j = 0; j < sections[i]->properties.size(); j++){
-                    if(sections[i]->properties[j] == command_part1){
-                        count++;
+            try{
+                for(int i = 0; i < sections.size(); i++){
+                    for(int j = 0; j < sections[i]->properties.size(); j++){
+                        if(sections[i]->properties[j] == command_part1){
+                            count++;
+                        }
                     }
                 }
+                std::cout<<command_part1<<","<<main_command<<",? == ";
+                std::cout<<count<<"\n";
             }
-            std::cout<<count<<"\n";
+            catch(std::out_of_range& e){
+                return;
+            }
         }
     }
 
     if(main_command == 'E'){
-       for(int i = sections.size() - 1; i >= 0; i--){
-           for(int j = 0; j < sections[i]->selectors.size(); j++){
-               if(sections[i]->selectors[j] == command_part1){
-                   std::cout<<command_part1<<","<<main_command<<","<<command_part2<<" == ";
-                   std::cout<<sections[i]->values[sections[i]->find_property(command_part2)];
-                   return;
+        try {
+           for(int i = sections.size() - 1; i >= 0; i--){
+               for(int j = 0; j < sections[i]->selectors.size(); j++){
+                   if(sections[i]->selectors[j] == command_part1){
+                       std::cout<<command_part1<<","<<main_command<<","<<command_part2<<" == ";
+                       std::cout<<sections[i]->values[sections[i]->find_property(command_part2)]<<"\n";
+                       return;
+                   }
                }
            }
-       }
+        }
+        catch (std::out_of_range& e){
+            return;
+        }
     }
 
     if(main_command == 'D'){
         if(command_part2 == "*"){
-            sections.pop(command_part1_digit - 1);
-            std::cout<<command_part1_digit<<","<<main_command<<","<<command_part2<<" == deleted\n";
-            return;
+            try{
+                sections.pop(command_part1_digit - 1);
+                std::cout<<command_part1_digit<<","<<main_command<<","<<command_part2<<" == deleted\n";
+                return;
+            }
+            catch (std::out_of_range& e){
+                return;
+            }
         }
 
         if(command_part2.size() > 0){
-            sections[--command_part1_digit]->delete_property(command_part2);
-            std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
+            try{
+                if(sections[--command_part1_digit]->delete_property(command_part2)){
+                    std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
+                    if(sections[command_part1_digit]->properties.size() == 0) sections.pop(command_part1_digit);
+                }
+            }
+            catch (std::out_of_range& e){
+                return;
+            }
         }
     }
 }
