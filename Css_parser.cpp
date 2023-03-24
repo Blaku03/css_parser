@@ -1,41 +1,47 @@
 #include "Css_parser.h"
 
 void Css_parser::read_css() {
-    if(input == "????"){
+    if(selectors) read_selector();
+
+    if(question_counter == 4){
         commands = true;
         input.clear();
+        question_counter = 0;
         sections.pop_back();
+        return;
     }
 
     if(input_char == '{'){
-        attributes = true;
         selectors = false;
-        input.remove_last_char();
+        if(input_char == input[input.size() - 1]) input.remove_last_char();
+
+        input.remove_white_space_end();
         curr_section->selectors.push_back(input);
         input.clear();
+        return;
     }
 
     if(input_char == '}'){
-        attributes = false;
         selectors = true;
         input.clear();
         sections.add_section();
         curr_section = curr_section->next;
+        return;
     }
 
     if(input_char == ','){
-        if(!attributes){
-            input.remove_last_char();
-            curr_section->selectors.push_back(input);
-            input.clear();
-        }
-        else input+=" ";
+        if(input_char == input[input.size() - 1]) input.remove_last_char();
+        input.remove_white_space_end();
+
+        curr_section->selectors.push_back(input);
+        input.clear();
     }
 
     if(input_char == ':'){
         if(selectors) return;
 
-        input.remove_last_char();
+        if(input_char == input[input.size() - 1]) input.remove_last_char();
+        input.remove_white_space_end();
 
         attribute_reoccurance = curr_section->find_property(input);
         if(attribute_reoccurance != -1){
@@ -117,13 +123,21 @@ void Css_parser::read_attribute() {
 
     input_char = (char)std::getchar();
 
-    while(input_char != ';' && input_char != '\n'){
+    if(input_char != ' '){
+        temp_input[0] = input_char;
+        input += temp_input;
+    }
+
+    while(input_char != ';' && input_char != '\n' && input_char != '}'){
         input_char = (char)std::getchar();
         temp_input[0] = input_char;
         input += temp_input;
     }
 
-    input.remove_last_char();
+
+    if(input_char == input[input.size() - 1]) input.remove_last_char();
+    input.remove_white_space_end();
+
     if(attribute_reoccurance != -1){
         curr_section->values[attribute_reoccurance] = input;
         attribute_reoccurance = -1;
@@ -131,7 +145,35 @@ void Css_parser::read_attribute() {
     else
         curr_section->values.push_back(input);
 
+    if(input_char == '}'){
+        selectors = true;
+        sections.add_section();
+        curr_section = curr_section->next;
+    }
+
     input.clear();
+}
+
+void Css_parser::read_selector() {
+
+    while(input_char != '{' && input_char != ','){
+        input_char = (char)std::getchar();
+
+        if(input_char == '?') {
+            question_counter++;
+            if(question_counter == 4) return;
+            continue;
+        }
+
+        if(input_char == '\n') {
+            input_char = (char)std::getchar();
+            continue;
+        }
+
+        temp_input[0] = input_char;
+        input += temp_input;
+    }
+
 }
 
 void Css_parser::start() {

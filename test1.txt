@@ -1,16 +1,11 @@
-#cos {
-  color : black;
-  padding : none
+h1.abc:nth-child() + h2:abc(), h5
+{
+   color: blue ;
+  background:blue
 }
-
-.another {
-  off_white : 1px;
-  tak: 2px;
-  off_white : 1px;
-}
-
+h1:abc + h2:abc, h5 { color:red}
+h1::test p , h2{padding : none;background:white}
 ????
 ?
-i,A,?
-1,S,2
-1,A,padding
+4,S,?
+4,A,?

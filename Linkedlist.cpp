@@ -40,6 +40,16 @@ void Mstring::remove_last_char() {
     number_of_elements--;
 }
 
+void Mstring::remove_white_space_end() {
+
+    for(int i = number_of_elements - 1; i >= 0; i--){
+        if(main_buffer[i] != ' '){
+            return;
+        }
+        remove_last_char();
+    }
+}
+
 Mstring& Mstring::operator=(const Mstring& user_mstring){
     delete[] main_buffer;
 

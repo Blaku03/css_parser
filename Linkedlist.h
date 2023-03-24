@@ -13,6 +13,7 @@ public:
 
     Mstring& add_ms(const char* user_char);
     void remove_last_char();
+    void remove_white_space_end();
 
     Mstring& operator=(const Mstring& user_mstring);
     Mstring& operator=(const char* user_char);
