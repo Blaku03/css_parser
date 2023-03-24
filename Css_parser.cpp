@@ -60,6 +60,7 @@ void Css_parser::read_command_data() {
     star_counter = 0;
     if(input_char == '*') star_counter++;
     while(input_char != ',' && input_char != '\n' && input_char != '?'){
+        if(!std::cin.good()) return;
         input_char = (char)std::getchar();
 
         if(input_char == '*'){
@@ -129,7 +130,6 @@ void Css_parser::read_commands() {
            input.clear();
            handle_rest_of_commands();
         }
-
     }
 }
 

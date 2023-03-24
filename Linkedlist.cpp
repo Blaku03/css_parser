@@ -274,6 +274,8 @@ bool LinkedList::pop(size_t index) {
         return pop_back();
     }
 
+    if(current_node == nullptr) return false;
+
     current_node->previous->next = current_node->next;
     current_node->next->previous = current_node->previous;
     delete current_node;
