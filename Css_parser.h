@@ -13,6 +13,7 @@ class Css_parser {
     bool selectors = true;
     int attribute_reoccurance = -1;
     int question_counter = 0;
+    int star_counter = 0;
 
     char main_command;
     Mstring command_part1;
@@ -27,6 +28,7 @@ class Css_parser {
 public:
     void read_css();
     void read_commands();
+    void read_command_data();
     void read_char();
     void read_attribute();
     void handle_global_attribute();

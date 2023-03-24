@@ -10,11 +10,12 @@ h1.abc:nth-child() + h2:abc(), h5
 
 
 
-h1:abc +
-h2:def, h5 { color:red}
+h1:abc + h2:abc, h5 { color:red}
 h1::test p , h2{padding : none;background:white}
 ????
 ?
 color,A,?
 3,A,background
 h1:abc + h2:abc,S,?
+h1::test p,S,?
+

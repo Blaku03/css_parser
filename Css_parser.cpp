@@ -55,9 +55,33 @@ void Css_parser::read_css() {
 
 }
 
+void Css_parser::read_command_data() {
+
+    star_counter = 0;
+    if(input_char == '*') star_counter++;
+    while(input_char != ',' && input_char != '\n' && input_char != '?'){
+        input_char = (char)std::getchar();
+
+        if(input_char == '*'){
+            star_counter++;
+            if(star_counter == 3) return;
+            continue;
+        }
+
+        star_counter = 0;
+
+        temp_input[0] = input_char;
+        input += temp_input;
+    }
+}
+
 void Css_parser::read_commands() {
-    if(input == "****"){
+
+    read_command_data();
+
+    if(star_counter == 3){
         commands = false;
+        star_counter = 0;
         //check if everything was deleted
         if(sections.size() == 0){
             sections.add_section();
