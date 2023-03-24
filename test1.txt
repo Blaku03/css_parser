@@ -8,13 +8,25 @@ h1.abc:nth-child() + h2:abc(), h5
 }
 
 h1:abc + h2:abc, h5 { color:red}
+
 h1::test p , h2{padding : none;background:white}
+
+padding: blue;
 ????
 ?
-color,A,?
-4,A,background
-h1:abc + h2:abc,S,?
-h1::test p,S,?
-1,S,?
-1,A,?
-1,A,color
+2,D,*
+?
+****
+
+--webkit.Class:after .all::before , h2-p {
+background: white, "BLACK ";
+transform:none
+}
+
+????
+?
+
+****
+elo:no;
+????
+?

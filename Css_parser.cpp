@@ -7,6 +7,10 @@ void Css_parser::read_css() {
         commands = true;
         input.clear();
         question_counter = 0;
+        if(global_attributes_section){
+            global_attributes_section = false;
+            return;
+        }
         sections.pop_back();
         return;
     }
@@ -193,11 +197,7 @@ void Css_parser::read_attribute() {
 void Css_parser::handle_global_attribute() {
     global_attribute_data();
 
-    if(!global_attributes_section && sections.size() > 1){
-        global_attributes_section = true;
-        sections.add_section();
-        curr_section = curr_section->next;
-    }
+    global_attributes_section = true;
 
     curr_section->properties.push_back(global_attribute);
     curr_section->values.push_back(global_value);
