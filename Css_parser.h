@@ -7,10 +7,12 @@ class Css_parser {
     LinkedList sections;
     Node* curr_section = nullptr;
     Mstring input;
-    Mvector<Mstring> global_attributes;
+    Mstring global_attribute;
+    Mstring global_value;
 
     bool commands = false;
     bool selectors = true;
+    bool global_attributes_section = false;
     int attribute_reoccurance = -1;
     int question_counter = 0;
     int star_counter = 0;
@@ -29,6 +31,7 @@ public:
     void read_css();
     void read_commands();
     void read_command_data();
+    void global_attribute_data();
     void read_char();
     void read_attribute();
     void handle_global_attribute();

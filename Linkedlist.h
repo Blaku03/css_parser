@@ -14,7 +14,6 @@ public:
     Mstring& add_ms(const char* user_char);
     void remove_last_char();
     void remove_white_space_end();
-    static void attribute_value(Mstring& user_attribute);
 
     Mstring& operator=(const Mstring& user_mstring);
     Mstring& operator=(const char* user_char);

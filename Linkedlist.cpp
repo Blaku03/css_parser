@@ -50,16 +50,6 @@ void Mstring::remove_white_space_end() {
     }
 }
 
-void Mstring::attribute_value(Mstring &user_attribute) {
-    int size = user_attribute.size();
-    for(int i = size - 1; i >= 0; i--){
-       if(user_attribute[i] == ':'){
-           user_attribute.remove_last_char();
-           return;
-       }
-       user_attribute.remove_last_char();
-    }
-}
 
 Mstring& Mstring::operator=(const Mstring& user_mstring){
     delete[] main_buffer;

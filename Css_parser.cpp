@@ -12,6 +12,12 @@ void Css_parser::read_css() {
     }
 
     if(input_char == '{'){
+        if(global_attributes_section){
+            sections.add_section();
+            curr_section = curr_section->next;
+            global_attributes_section = false;
+        }
+
         selectors = false;
         if(input_char == input[input.size() - 1]) input.remove_last_char();
 
@@ -30,6 +36,12 @@ void Css_parser::read_css() {
     }
 
     if(input_char == ','){
+        if(global_attributes_section){
+            sections.add_section();
+            curr_section = curr_section->next;
+            global_attributes_section = false;
+        }
+
         if(input_char == input[input.size() - 1]) input.remove_last_char();
         input.remove_white_space_end();
 
@@ -179,11 +191,47 @@ void Css_parser::read_attribute() {
 }
 
 void Css_parser::handle_global_attribute() {
+    global_attribute_data();
 
-    Mstring::attribute_value(input);
-    input.remove_white_space_end();
-    global_attributes.push_back(input);
+    if(!global_attributes_section && sections.size() > 1){
+        global_attributes_section = true;
+        sections.add_section();
+        curr_section = curr_section->next;
+    }
+
+    curr_section->properties.push_back(global_attribute);
+    curr_section->values.push_back(global_value);
+
+    global_value.clear();
+    global_attribute.clear();
     input.clear();
+    input_char = '\0';
+}
+
+void Css_parser::global_attribute_data() {
+    bool global_value_flag = false;
+
+    input.remove_white_space_end();
+    int size = input.size() - 1;
+    for(int i = 0; i <= size; i++){
+        if(input[i] == ':'){
+            global_value_flag = true;
+            continue;
+        }
+        if(global_value_flag){
+            //checking for white space at the beginning of the value
+            if(global_value.size() == 0 && input[i] == ' ') continue;
+            temp_input[0] = input[i];
+            global_value += temp_input;
+            continue;
+        }
+        temp_input[0] = input[i];
+        global_attribute += temp_input;
+    }
+
+    global_value.remove_white_space_end();
+    global_attribute.remove_white_space_end();
+
 }
 
 void Css_parser::read_selector() {
@@ -301,11 +349,6 @@ void Css_parser::handle_rest_of_commands() {
                 }
             }
 
-            for(int i = 0; i < global_attributes.size(); i++){
-                if(global_attributes[i] == command_part1){
-                    count++;
-                }
-            }
 
             std::cout<<command_part1<<","<<main_command<<",? == ";
             std::cout<<count<<"\n";
