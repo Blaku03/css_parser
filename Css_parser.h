@@ -7,6 +7,7 @@ class Css_parser {
     LinkedList sections;
     Node* curr_section = nullptr;
     Mstring input;
+    Mvector<Mstring> global_attributes;
 
     bool commands = false;
     bool selectors = true;
@@ -28,6 +29,7 @@ public:
     void read_commands();
     void read_char();
     void read_attribute();
+    void handle_global_attribute();
     void read_selector();
     void start();
     void handle_rest_of_commands();

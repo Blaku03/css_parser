@@ -1,11 +1,20 @@
+padding: none;
+color : blue;
+
 h1.abc:nth-child() + h2:abc(), h5
 {
    color: blue ;
   background:blue
 }
-h1:abc + h2:abc, h5 { color:red}
+
+
+
+
+h1:abc +
+h2:def, h5 { color:red}
 h1::test p , h2{padding : none;background:white}
 ????
 ?
-4,S,?
-4,A,?
+color,A,?
+3,A,background
+h1:abc + h2:abc,S,?

@@ -154,6 +154,14 @@ void Css_parser::read_attribute() {
     input.clear();
 }
 
+void Css_parser::handle_global_attribute() {
+
+    Mstring::attribute_value(input);
+    input.remove_white_space_end();
+    global_attributes.push_back(input);
+    input.clear();
+}
+
 void Css_parser::read_selector() {
 
     question_counter = 0;
@@ -161,6 +169,10 @@ void Css_parser::read_selector() {
     while(input_char != '{' && input_char != ','){
         input_char = (char)std::getchar();
 
+        if(input_char == ';') {
+            handle_global_attribute();
+            return;
+        }
         if(input_char == '?') {
             question_counter++;
             if(question_counter == 3) return;
@@ -169,7 +181,6 @@ void Css_parser::read_selector() {
         question_counter = 0;
 
         if(input_char == '\n') {
-            input_char = (char)std::getchar();
             continue;
         }
 
@@ -265,6 +276,13 @@ void Css_parser::handle_rest_of_commands() {
                     }
                 }
             }
+
+            for(int i = 0; i < global_attributes.size(); i++){
+                if(global_attributes[i] == command_part1){
+                    count++;
+                }
+            }
+
             std::cout<<command_part1<<","<<main_command<<",? == ";
             std::cout<<count<<"\n";
         }
