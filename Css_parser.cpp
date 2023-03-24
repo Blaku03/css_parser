@@ -3,7 +3,7 @@
 void Css_parser::read_css() {
     if(selectors) read_selector();
 
-    if(question_counter == 4){
+    if(question_counter == 3){
         commands = true;
         input.clear();
         question_counter = 0;
@@ -156,14 +156,17 @@ void Css_parser::read_attribute() {
 
 void Css_parser::read_selector() {
 
+    question_counter = 0;
+
     while(input_char != '{' && input_char != ','){
         input_char = (char)std::getchar();
 
         if(input_char == '?') {
             question_counter++;
-            if(question_counter == 4) return;
+            if(question_counter == 3) return;
             continue;
         }
+        question_counter = 0;
 
         if(input_char == '\n') {
             input_char = (char)std::getchar();
