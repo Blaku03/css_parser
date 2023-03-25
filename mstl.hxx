@@ -161,26 +161,26 @@ void Mvector<T>::clear() {
 }
 
 template<typename T>
-T Mvector<T>::i_element(size_t index) {
+T& Mvector<T>::i_element(size_t index) {
     if (index < number_of_elements) return main_buffer[index];
     std::cout << "ERROR: INDEX GIVEN IS NOT WITHIN THE VECTOR\n";
     exit(99);
 }
 
 template<typename T>
-T Mvector<T>::operator[](size_t index) {
+T& Mvector<T>::operator[](size_t index) {
     return i_element(index);
 }
 
 template<typename T>
-T Mvector<T>::i_element(size_t index) const {
+const T& Mvector<T>::i_element(size_t index) const {
     if (index < number_of_elements) return main_buffer[index];
     std::cout << "ERROR: INDEX GIVEN IS NOT WITHIN THE VECTOR\n";
     exit(99);
 }
 
 template<typename T>
-T Mvector<T>::operator[](size_t index) const {
+const T& Mvector<T>::operator[](size_t index) const {
    return i_element(index);
 }
 

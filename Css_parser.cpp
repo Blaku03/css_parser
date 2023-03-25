@@ -60,11 +60,10 @@ void Css_parser::read_css() {
         input.remove_white_space_end();
 
         attribute_reoccurance = curr_section->find_property(input);
-        if(attribute_reoccurance != -1){
-            return;
+        if(attribute_reoccurance == -1){
+            curr_section->properties.push_back(input);
         }
 
-        curr_section->properties.push_back(input);
         input.clear();
         read_attribute();
     }
@@ -199,8 +198,15 @@ void Css_parser::handle_global_attribute() {
 
     global_attributes_section = true;
 
-    curr_section->properties.push_back(global_attribute);
-    curr_section->values.push_back(global_value);
+    attribute_reoccurance = curr_section->find_property(global_attribute);
+    if(attribute_reoccurance != -1){
+        curr_section->values[attribute_reoccurance] = global_value;
+        attribute_reoccurance = -1;
+    }
+    else{
+        curr_section->properties.push_back(global_attribute);
+        curr_section->values.push_back(global_value);
+    }
 
     global_value.clear();
     global_attribute.clear();

@@ -34,10 +34,10 @@
         void clear();
 
         //Returns the value of i element of main buffer
-        T i_element(size_t index_of_element);
-        T operator[](size_t index_of_element);
-        T i_element(size_t index_of_element) const;
-        T operator[](size_t index_of_element) const;
+        T& i_element(size_t index_of_element);
+        T& operator[](size_t index_of_element);
+        const T& i_element(size_t index_of_element) const;
+        const T& operator[](size_t index_of_element) const;
         Mvector& operator=(const Mvector& user_vector);
         size_t size() const;
 
