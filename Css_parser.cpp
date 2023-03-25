@@ -26,7 +26,7 @@ void Css_parser::read_css() {
         if(input_char == input[input.size() - 1]) input.remove_last_char();
 
         input.remove_white_space_end();
-        curr_section->selectors.push_back(input);
+        if(input.size() > 0) curr_section->selectors.push_back(input);
         input.clear();
         return;
     }
@@ -80,7 +80,7 @@ void Css_parser::read_command_data() {
 
         if(input_char == '*'){
             star_counter++;
-            if(star_counter == 3) return;
+            if(star_counter == 4) return;
             continue;
         }
 
@@ -95,9 +95,10 @@ void Css_parser::read_commands() {
 
     read_command_data();
 
-    if(star_counter == 3){
+    if(star_counter == 4){
         commands = false;
         star_counter = 0;
+        input_char = '\0';
         //check if everything was deleted
         if(sections.size() == 0){
             sections.add_section();
