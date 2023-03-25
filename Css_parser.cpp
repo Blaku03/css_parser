@@ -316,6 +316,7 @@ void Css_parser::handle_rest_of_commands() {
                 for(int j = 0; j < sections[i]->selectors.size(); j++){
                     if(sections[i]->selectors[j] == command_part1){
                         count++;
+                        break;
                     }
                 }
             }
