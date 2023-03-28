@@ -181,6 +181,14 @@ int Node::find_property(const Mstring& user_attribute) {
     return -1;
 }
 
+int Node::find_selector(const Mstring &user_selector) {
+    for (int i = 0; i < selectors.size(); i++) {
+        if (selectors[i] == user_selector) return i;
+    }
+
+    return -1;
+}
+
 bool Node::delete_property(const Mstring &user_property) {
    int index = 0;
 

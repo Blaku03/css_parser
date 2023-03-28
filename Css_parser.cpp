@@ -24,9 +24,13 @@ void Css_parser::read_css() {
 
         selectors = false;
         if(input_char == input[input.size() - 1]) input.remove_last_char();
-
         input.remove_white_space_end();
-        if(input.size() > 0) curr_section->selectors.push_back(input);
+
+        int selector_reoccurance = curr_section->find_selector(input);
+
+        if(selector_reoccurance == -1 && input.size() > 0){
+            curr_section->selectors.push_back(input);
+        }
         input.clear();
         return;
     }
@@ -49,8 +53,13 @@ void Css_parser::read_css() {
         if(input_char == input[input.size() - 1]) input.remove_last_char();
         input.remove_white_space_end();
 
-        curr_section->selectors.push_back(input);
+        int selector_reoccurance = curr_section->find_selector(input);
+
+        if(selector_reoccurance == -1 && input.size() > 0){
+            curr_section->selectors.push_back(input);
+        }
         input.clear();
+        return;
     }
 
     if(input_char == ':'){
@@ -242,7 +251,6 @@ void Css_parser::global_attribute_data() {
 }
 
 void Css_parser::read_selector() {
-
     question_counter = 0;
 
     while(input_char != '{' && input_char != ','){
@@ -252,6 +260,7 @@ void Css_parser::read_selector() {
             handle_global_attribute();
             return;
         }
+
         if(input_char == '?') {
             question_counter++;
             if(question_counter == 3) return;
@@ -313,7 +322,8 @@ void Css_parser::handle_rest_of_commands() {
         if(command_part2 == "?" && command_part1.size() > 0){
             int count = 0;
             std::cout<<command_part1<<","<<main_command<<",? == ";
-            for(int i = 0; i < sections.size(); i++){
+            int section_size = sections.size();
+            for(int i = 0; i < section_size; i++){
                 for(int j = 0; j < sections[i]->selectors.size(); j++){
                     if(sections[i]->selectors[j] == command_part1){
                         count++;
@@ -349,10 +359,12 @@ void Css_parser::handle_rest_of_commands() {
 
         if(command_part1.size() > 0 && command_part2 == "?"){
             int count = 0;
-            for(int i = 0; i < sections.size(); i++){
+            int section_size = sections.size();
+            for(int i = 0; i < section_size; i++){
                 for(int j = 0; j < sections[i]->properties.size(); j++){
                     if(sections[i]->properties[j] == command_part1){
                         count++;
+                        break;
                     }
                 }
             }
@@ -364,7 +376,8 @@ void Css_parser::handle_rest_of_commands() {
     }
 
     if(main_command == 'E'){
-       for(int i = sections.size() - 1; i >= 0; i--){
+        int section_size = sections.size();
+       for(int i = section_size - 1; i >= 0; i--){
            for(int j = 0; j < sections[i]->selectors.size(); j++){
                if(sections[i]->selectors[j] == command_part1){
                    int index = sections[i]->find_property(command_part2);

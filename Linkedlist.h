@@ -43,6 +43,7 @@ public:
     void add_value(const char* user_value);
     void add_property(const char* user_property);
     int find_property(const Mstring& user_attribute);
+    int find_selector(const Mstring& user_selector);
     bool delete_property(const Mstring& user_property);
 };
 
