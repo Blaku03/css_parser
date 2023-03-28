@@ -1,6 +1,7 @@
-#ifndef INC_1_CSS_LINKEDLIST_H
-#define INC_1_CSS_LINKEDLIST_H
+#ifndef INC_1_CSS_DATASTRUCTURES_H
+#define INC_1_CSS_DATASTRUCTURES_H
 #include "mstl.hxx"
+#define ARR_LIST_SIZE 8
 
 class Mstring : public Mvector<char> {
 public:
@@ -30,40 +31,50 @@ public:
     friend std::ostream& operator<<(std::ostream &os, const Mstring &mstring);
 };
 
+class Pair{
+public:
+    Mstring property;
+    Mstring value;
+};
 
+template<typename T>
 class Node{
 public:
     Node* next = nullptr;
     Node* previous = nullptr;
-    Mvector<Mstring> selectors;
-    Mvector<Mstring> values;
-    Mvector<Mstring> properties;
+    T data;
 
-    void add_selector(const char* user_selector);
-    void add_value(const char* user_value);
-    void add_property(const char* user_property);
-    int find_property(const Mstring& user_attribute);
-    int find_selector(const Mstring& user_selector);
-    bool delete_property(const Mstring& user_property);
+    T& postion_i(int index);
+    T& operator[](int index);
+    size_t find_value(const Mstring& user_value);
 };
 
+template<typename T>
 class LinkedList {
 public:
-    Node* first;
-    Node* last;
+    Node<T>* first;
+    Node<T>* last;
 
     LinkedList();
     ~LinkedList();
-
-    void add_section();
-
-    bool pop_back();
-    bool pop_front();
-    bool pop(size_t index);
-    int size();
-
-    Node* operator[](size_t index);
 };
 
+class Section{
+public:
+    LinkedList<Mstring>* selectors;
+    LinkedList<Pair>* block_data;
+};
 
-#endif //INC_1_CSS_LINKEDLIST_H
+class mainList{
+public:
+    Section sections[ARR_LIST_SIZE];
+    bool is_used[ARR_LIST_SIZE];
+    mainList* next = nullptr;
+    mainList* previous = nullptr;
+    size_t curr_section_arr_size = 0;
+
+    void add_new_sections_tab();
+    void add_section();
+};
+
+#endif //INC_1_CSS_DATASTRUCTURES_H

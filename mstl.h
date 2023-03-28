@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#define VECTOR_INIT_SIZE 8
     template<typename T>
     class Mvector {
     protected:

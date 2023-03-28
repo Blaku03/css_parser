@@ -31,7 +31,7 @@ bool Mvector<T>::enough_buffer_space(size_t space_to_add) {
 
 template<typename T>
 Mvector<T>::Mvector() {
-    current_size = VECTOR_INIT_SIZE;
+    current_size = 11;
     main_buffer = new T[current_size];
     number_of_elements = 0;
 }
@@ -109,11 +109,11 @@ T Mvector<T>::pop_index(size_t index_of_element){
         T *helper_buffer = new T[current_size];
         T popped_element = main_buffer[index_of_element];
 
-        for (int i = 0; i < index_of_element; i++) {
+        for (size_t i = 0; i < index_of_element; i++) {
             *(helper_buffer + i) = *(main_buffer + i);
         }
 
-        for (int i = index_of_element + 1; i < number_of_elements; i++) {
+        for (size_t i = index_of_element + 1; i < number_of_elements; i++) {
             *(helper_buffer + i - 1) = *(main_buffer + i);
         }
 
@@ -155,8 +155,8 @@ void Mvector<T>::shrink_to_fit() {
 template<typename T>
 void Mvector<T>::clear() {
     delete[] main_buffer;
-    main_buffer = new T[VECTOR_INIT_SIZE];
-    current_size = VECTOR_INIT_SIZE;
+    current_size = 11;
+    main_buffer = new T[current_size];
     number_of_elements = 0;
 }
 
@@ -186,6 +186,9 @@ const T& Mvector<T>::operator[](size_t index) const {
 
 template<typename T>
 Mvector<T>& Mvector<T>::operator=(const Mvector& user_vector) {
+    //handle self-assigment
+    if (this == &user_vector) return *this;
+
     delete[] main_buffer;
 
     main_buffer = copy_array(user_vector.main_buffer, user_vector.current_size, false);

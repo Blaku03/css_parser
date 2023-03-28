@@ -1,11 +1,12 @@
 #ifndef INC_1_CSS_CSS_PARSER_H
 #define INC_1_CSS_CSS_PARSER_H
-#include "Linkedlist.h"
+#include "DataStructures.h"
 
 class Css_parser {
 
-    LinkedList sections;
-    Node* curr_section = nullptr;
+    Section sectionsx;
+//    LinkedList sections;
+//    Node* curr_section = nullptr;
     Mstring input;
     Mstring global_attribute;
     Mstring global_value;
