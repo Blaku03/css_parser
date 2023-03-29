@@ -8,22 +8,6 @@ Node<T>::~Node(){
 }
 
 template<typename T>
-size_t LinkedList<T>::find_value(const char* user_value) {
-    if(first == nullptr) return -1;
-
-    Node<T>* current_node = first;
-
-    size_t index = 0;
-    while(current_node != nullptr){
-        if(current_node->data.value == user_value) return index;
-        current_node = current_node->next;
-        index++;
-    }
-
-    return -1;
-}
-
-template<typename T>
 T* LinkedList<T>::operator[](size_t index) {
     if(first == nullptr) return nullptr;
 
@@ -34,21 +18,6 @@ T* LinkedList<T>::operator[](size_t index) {
     }
 
     return &current_node->data;
-}
-
-template<typename T>
-void LinkedList<T>::add_element_selector(const char *element) {
-    Node<T>* new_node = new Node<T>;
-    new_node->data = element;
-
-    if(first == nullptr){
-        first = new_node;
-        last = new_node;
-    } else{
-        last->next = new_node;
-        new_node->previous = last;
-        last = new_node;
-    }
 }
 
 template<typename T>

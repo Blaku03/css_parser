@@ -18,9 +18,7 @@ public:
     Node<T>* first = nullptr;
     Node<T>* last = nullptr;
 
-    size_t find_value(const char* user_value);
     T* operator[](size_t index);
-    void add_element_selector(const char* element);
 
     ~LinkedList();
 };

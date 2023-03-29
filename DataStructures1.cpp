@@ -165,7 +165,7 @@ int Section::find_property(const Mstring &property_to_find) const {
     Node<Pair> *current_node = block_data->first;
 
     int index = 0;
-    while(current_node->next != nullptr){
+    while(current_node != nullptr){
         if(current_node->data.property == property_to_find) return index;
         current_node = current_node->next;
         index++;
@@ -181,7 +181,7 @@ int Section::find_selector(const Mstring &selector_to_find) const {
     Node<Mstring> *current_node = selectors->first;
 
     int index = 0;
-    while(current_node->next != nullptr){
+    while(current_node != nullptr){
         if(current_node->data == selector_to_find) return index;
         current_node = current_node->next;
         index++;
@@ -316,17 +316,22 @@ void mainList::remove_section_index(size_t index) {
     curr_section_arr_size--;
 }
 
-Section* mainList::operator[](size_t index) {
+Section* mainList::i_index(size_t index) {
 
     if (index >= ARR_LIST_SIZE){
         // switch to the next list node with new array
         if (next != nullptr){
-            return (*next)[index - ARR_LIST_SIZE];
+            return next->i_index(index - ARR_LIST_SIZE);
         }
         else return nullptr;
     }
 
     return &sections[index];
+}
+
+void mainList::init_main_list() {
+    first = this;
+    last = this;
 }
 
 mainList::mainList() {

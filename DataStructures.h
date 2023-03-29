@@ -67,7 +67,8 @@ public:
     void add_section();
     void remove_last_section();
     void remove_section_index(size_t index);
-    Section* operator[](size_t index);
+    Section* i_index(size_t index);
+    void init_main_list();
     mainList();
     ~mainList();
 
