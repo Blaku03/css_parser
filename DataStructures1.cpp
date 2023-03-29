@@ -158,3 +158,58 @@ std::istream& operator>>(std::istream &is, Mstring &mstring){
     return is;
 }
 
+int Section::find_property(const Mstring &property_to_find) const {
+    if(block_data == nullptr) return -1;
+    if(block_data->first == nullptr) return -1;
+
+    Node<Pair> *current_node = block_data->first;
+
+    int index = 0;
+    while(current_node->next != nullptr){
+        if(current_node->data.property == property_to_find) return index;
+        current_node = current_node->next;
+        index++;
+    }
+
+    return -1;
+}
+
+void Section::add_selector(const char *selector_to_add) {
+    //avoid adding empty selectors
+    if (selector_to_add == nullptr) return;
+
+}
+
+void mainList::add_section() {
+    if (curr_section_arr_size == ARR_LIST_SIZE - 1){
+        // switch to the new list node with new array
+        mainList* new_list = new mainList();
+        if(first == nullptr){
+            first = new_list;
+            last = new_list;
+        } else {
+            last->next = new_list;
+            new_list->previous = last;
+            last = new_list;
+        }
+    }
+
+    is_used[curr_section_arr_size] = true;
+    curr_section_arr_size++;
+    active_sections++;
+}
+
+mainList::mainList() {
+    for(int i = 0; i < ARR_LIST_SIZE; i++){
+        is_used[i] = false;
+        sections[i] = Section();
+    }
+}
+
+mainList::~mainList() {
+    while(first != nullptr){
+        mainList* temp = first;
+        first = first->next;
+        delete temp;
+    }
+}
