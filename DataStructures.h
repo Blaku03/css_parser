@@ -44,7 +44,6 @@ public:
     Node* previous = nullptr;
     T data;
 
-    Node();
     ~Node();
 };
 
@@ -58,8 +57,7 @@ public:
     T* operator[](size_t index);
     void add_element_selector(const char* element);
 
-//    LinkedList();
-//    ~LinkedList();
+    ~LinkedList();
 };
 
 class Section{
@@ -68,12 +66,12 @@ public:
     LinkedList<Pair>* block_data = nullptr;
 
     int find_property(const Mstring& property_to_find) const;
+    int find_selector(const Mstring& selector_to_find) const;
     void add_selector(const char*  selector_to_add);
     void add_value(const char* value_to_add);
     void add_property(const char* property_to_add);
 
-//    Section();
-//    ~Section();
+    ~Section();
 };
 
 class mainList{
@@ -85,14 +83,12 @@ public:
     mainList* first = nullptr;
     mainList* last = nullptr;
     size_t curr_section_arr_size = 0;
-    size_t active_sections = 0;
-    Section* curr_section = nullptr;
 
     void add_new_sections_tab();
     void add_section();
     void remove_last_section();
     void remove_section_index(size_t index);
-    Section& operator[](size_t index);
+    Section* operator[](size_t index);
     mainList();
     ~mainList();
 

@@ -2,6 +2,11 @@
 #define INC_1_CSS_DATASTRUCTURES2_HXX
 #include "DataStructures.h"
 
+template<typename T>
+Node<T>::~Node(){
+    if(next != nullptr) delete next;
+}
+
 template<> size_t LinkedList<Pair>::find_value(const Mstring &user_value) {
     if(first == nullptr) return -1;
 
@@ -32,7 +37,7 @@ T* LinkedList<T>::operator[](size_t index) {
 
 template<typename T>
 void LinkedList<T>::add_element_selector(const char *element) {
-    Node<T>* new_node = new Node<T>();
+    Node<T>* new_node = new Node<T>;
     new_node->data = element;
 
     if(first == nullptr){
@@ -42,6 +47,15 @@ void LinkedList<T>::add_element_selector(const char *element) {
         last->next = new_node;
         new_node->previous = last;
         last = new_node;
+    }
+}
+
+template<typename T>
+LinkedList<T>::~LinkedList<T>() {
+    while(first != nullptr){
+        Node<T> *temp = first;
+        first = first->next;
+        delete temp;
     }
 }
 

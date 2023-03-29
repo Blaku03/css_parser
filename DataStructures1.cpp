@@ -174,29 +174,159 @@ int Section::find_property(const Mstring &property_to_find) const {
     return -1;
 }
 
+int Section::find_selector(const Mstring &selector_to_find) const {
+    if(selectors == nullptr) return -1;
+    if(selectors->first == nullptr) return -1;
+
+    Node<Mstring> *current_node = selectors->first;
+
+    int index = 0;
+    while(current_node->next != nullptr){
+        if(current_node->data == selector_to_find) return index;
+        current_node = current_node->next;
+        index++;
+    }
+
+    return -1;
+}
+
 void Section::add_selector(const char *selector_to_add) {
     //avoid adding empty selectors
     if (selector_to_add == nullptr) return;
 
+    Mstring new_selector(selector_to_add);
+    //check if selector already exists
+    if (find_selector(new_selector) != -1) return;
+
+    if(selectors == nullptr){
+        selectors = new LinkedList<Mstring>;
+        Node<Mstring> *new_node = new Node<Mstring>;
+        new_node->data = new_selector;
+        selectors->first = new_node;
+        selectors->last = new_node;
+    }
+    else{
+        Node<Mstring> *new_node = new Node<Mstring>;
+        new_node->data = new_selector;
+        selectors->last->next = new_node;
+        new_node->previous = selectors->last;
+        selectors->last = new_node;
+    }
+}
+
+void Section::add_value(const char *value_to_add) {
+
+    if(value_to_add == nullptr) return;
+
+    Mstring new_value(value_to_add);
+
+    block_data->last->data.value = new_value;
+}
+
+void Section::add_property(const char *property_to_add) {
+
+    if(property_to_add == nullptr) return;
+
+    Mstring new_property(property_to_add);
+
+    if(block_data == nullptr){
+        block_data = new LinkedList<Pair>;
+        Node<Pair> *new_node = new Node<Pair>;
+        new_node->data.property = new_property;
+        block_data->first = new_node;
+        block_data->last = new_node;
+    }
+    else{
+        Node<Pair> *new_node = new Node<Pair>;
+        new_node->data.property = new_property;
+        block_data->last->next = new_node;
+        new_node->previous = block_data->last;
+        block_data->last = new_node;
+    }
+}
+
+Section::~Section() {
+    if(selectors != nullptr){
+        while(selectors->first != nullptr){
+            Node<Mstring> *temp = selectors->first;
+            selectors->first = selectors->first->next;
+            delete temp;
+        }
+        delete selectors;
+    }
+
+    if(block_data != nullptr){
+        while(block_data->first != nullptr){
+            Node<Pair> *temp = block_data->first;
+            block_data->first = block_data->first->next;
+            delete temp;
+        }
+        delete block_data;
+    }
+}
+
+void mainList::add_new_sections_tab() {
+    mainList* new_list = new mainList();
+    if(first == nullptr){
+        first = new_list;
+        last = new_list;
+    } else {
+        last->next = new_list;
+        new_list->previous = last;
+        last = new_list;
+    }
+    new_list->is_used[0] = true;
+    new_list->curr_section_arr_size = 1;
 }
 
 void mainList::add_section() {
     if (curr_section_arr_size == ARR_LIST_SIZE - 1){
         // switch to the new list node with new array
-        mainList* new_list = new mainList();
-        if(first == nullptr){
-            first = new_list;
-            last = new_list;
-        } else {
-            last->next = new_list;
-            new_list->previous = last;
-            last = new_list;
-        }
+        add_new_sections_tab();
+        return;
     }
 
     is_used[curr_section_arr_size] = true;
     curr_section_arr_size++;
-    active_sections++;
+}
+
+void mainList::remove_last_section() {
+    if (curr_section_arr_size == 0){
+        // switch to the previous list node with new array
+        if (previous != nullptr){
+            previous->remove_last_section();
+            return;
+        }
+    }
+
+    is_used[curr_section_arr_size] = false;
+    curr_section_arr_size--;
+}
+
+void mainList::remove_section_index(size_t index) {
+    if (index >= ARR_LIST_SIZE){
+        // switch to the next list node with new array
+        if (next != nullptr){
+            next->remove_section_index(index - ARR_LIST_SIZE);
+            return;
+        }
+    }
+
+    is_used[index] = false;
+    curr_section_arr_size--;
+}
+
+Section* mainList::operator[](size_t index) {
+
+    if (index >= ARR_LIST_SIZE){
+        // switch to the next list node with new array
+        if (next != nullptr){
+            return (*next)[index - ARR_LIST_SIZE];
+        }
+        else return nullptr;
+    }
+
+    return &sections[index];
 }
 
 mainList::mainList() {
