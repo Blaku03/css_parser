@@ -1,16 +1,17 @@
 #ifndef INC_1_CSS_DATASTRUCTURES2_HXX
 #define INC_1_CSS_DATASTRUCTURES2_HXX
-#include "DataStructures.h"
+#include "DataStructures2.h"
 
 template<typename T>
 Node<T>::~Node(){
     if(next != nullptr) delete next;
 }
 
-template<> size_t LinkedList<Pair>::find_value(const Mstring &user_value) {
+template<typename T>
+size_t LinkedList<T>::find_value(const char* user_value) {
     if(first == nullptr) return -1;
 
-    Node<Pair>* current_node = first;
+    Node<T>* current_node = first;
 
     size_t index = 0;
     while(current_node != nullptr){
