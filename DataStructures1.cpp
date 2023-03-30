@@ -323,15 +323,14 @@ void mainList::remove_last_section() {
 //TODO check if after deleting section the array is empty
 void mainList::remove_section_index(size_t index) {
 
-    mainList* node_delete = this;
+    mainList* node_delete = first;
     while(index >= curr_section_arr_size){
+        if(node_delete->next == nullptr) return;
         node_delete = node_delete->next;
         index -= curr_section_arr_size;
     }
 
-    for(int i = 0; i < index; i++){
-        if(!is_used[i]) index++;
-    }
+    while(!is_used[index]) ++index;
 
     node_delete->is_used[index] = false;
     node_delete->curr_section_arr_size--;
@@ -342,6 +341,14 @@ void mainList::remove_section_index(size_t index) {
         }
         if(node_delete->next != nullptr){
             node_delete->next->previous = node_delete->previous;
+        }
+        //check if node_delete is first
+        if(node_delete->first == node_delete){
+            node_delete->first = node_delete->next;
+        }
+        //same thing with last
+        if(node_delete->last == node_delete){
+            node_delete->last = node_delete->previous;
         }
         delete node_delete->sections->block_data;
         delete node_delete->sections->selectors;

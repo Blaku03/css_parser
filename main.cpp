@@ -37,9 +37,7 @@ int main() {
     curr_section->add_property("font-size");
     curr_section->add_value("14px");
 
-    main_list->remove_last_section();
-    main_list->remove_last_section();
-//    main_list->remove_section_index(2);
+    main_list->i_index(25);
 
     return 0;
 }
