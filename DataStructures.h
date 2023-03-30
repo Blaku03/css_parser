@@ -44,11 +44,16 @@ public:
     LinkedList<Mstring>* selectors = nullptr;
     LinkedList<Pair>* block_data = nullptr;
 
+    int selectors_counter = 0;
+    int block_data_counter = 0;
+
     int find_property(const Mstring& property_to_find) const;
     int find_selector(const Mstring& selector_to_find) const;
-    void add_selector(const char*  selector_to_add);
-    void add_value(const char* value_to_add);
-    void add_property(const char* property_to_add);
+    void add_selector(const Mstring&  selector_to_add);
+    void add_value(const Mstring& value_to_add);
+    void add_value_position(const Mstring& value_to_add, size_t position);
+    void add_property(const Mstring& property_to_add);
+    Mstring& selector_index(size_t index);
 
     ~Section();
 };
@@ -68,6 +73,7 @@ public:
     void remove_last_section();
     void remove_section_index(size_t index);
     Section* i_index(size_t index);
+    int number_of_active_sections() const;
     void init_main_list();
     mainList();
     ~mainList();

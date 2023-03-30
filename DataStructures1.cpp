@@ -190,59 +190,67 @@ int Section::find_selector(const Mstring &selector_to_find) const {
     return -1;
 }
 
-void Section::add_selector(const char *selector_to_add) {
-    //avoid adding empty selectors
-    if (selector_to_add == nullptr) return;
+void Section::add_selector(const Mstring& selector_to_add) {
 
-    Mstring new_selector(selector_to_add);
-    //check if selector already exists
-    if (find_selector(new_selector) != -1) return;
-
+    selectors_counter++;
     if(selectors == nullptr){
         selectors = new LinkedList<Mstring>;
         Node<Mstring> *new_node = new Node<Mstring>;
-        new_node->data = new_selector;
+        new_node->data = selector_to_add;
         selectors->first = new_node;
         selectors->last = new_node;
     }
     else{
         Node<Mstring> *new_node = new Node<Mstring>;
-        new_node->data = new_selector;
+        new_node->data = selector_to_add;
         selectors->last->next = new_node;
         new_node->previous = selectors->last;
         selectors->last = new_node;
     }
 }
 
-void Section::add_value(const char *value_to_add) {
-
-    if(value_to_add == nullptr) return;
-
-    Mstring new_value(value_to_add);
-
-    block_data->last->data.value = new_value;
+void Section::add_value(const Mstring& value_to_add) {
+    block_data->last->data.value = value_to_add;
 }
 
-void Section::add_property(const char *property_to_add) {
+void Section::add_value_position(const Mstring& value_to_add, size_t position) {
 
-    if(property_to_add == nullptr) return;
+        Node<Pair> *current_node = block_data->first;
 
-    Mstring new_property(property_to_add);
+        for (size_t i = 0; i < position; i++) {
+            current_node = current_node->next;
+        }
 
+        current_node->data.value = value_to_add;
+}
+
+void Section::add_property(const Mstring& property_to_add) {
+
+    block_data_counter++;
     if(block_data == nullptr){
         block_data = new LinkedList<Pair>;
         Node<Pair> *new_node = new Node<Pair>;
-        new_node->data.property = new_property;
+        new_node->data.property = property_to_add;
         block_data->first = new_node;
         block_data->last = new_node;
     }
     else{
         Node<Pair> *new_node = new Node<Pair>;
-        new_node->data.property = new_property;
+        new_node->data.property = property_to_add;
         block_data->last->next = new_node;
         new_node->previous = block_data->last;
         block_data->last = new_node;
     }
+}
+
+Mstring& Section::selector_index(size_t index) {
+    Node<Mstring> *current_node = selectors->first;
+
+    for (size_t i = 0; i < index; i++) {
+        current_node = current_node->next;
+    }
+
+    return current_node->data;
 }
 
 Section::~Section() {
@@ -370,6 +378,16 @@ Section* mainList::i_index(size_t index) {
     }
 
     return &sections[index];
+}
+
+int mainList::number_of_active_sections() const {
+    int counter = 0;
+    mainList* curr_list = first;
+    while(curr_list != nullptr){
+       counter += (int)curr_list->curr_section_arr_size;
+       curr_list = curr_list->next;
+    }
+    return counter;
 }
 
 void mainList::init_main_list() {

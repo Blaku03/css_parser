@@ -7,29 +7,19 @@ void Css_parser::read_css() {
         commands = true;
         input.clear();
         question_counter = 0;
-        if(global_attributes_section){
-            global_attributes_section = false;
-            return;
-        }
-        sections.pop_back();
+        sections_list->remove_last_section();
         return;
     }
 
     if(input_char == '{'){
-        if(global_attributes_section){
-            sections.add_section();
-            curr_section = curr_section->next;
-            global_attributes_section = false;
-        }
-
         selectors = false;
         if(input_char == input[input.size() - 1]) input.remove_last_char();
         input.remove_white_space_end();
 
-        int selector_reoccurance = curr_section->find_selector(input);
+        int selector_reoccurrence  = curr_section->find_selector(input);
 
-        if(selector_reoccurance == -1 && input.size() > 0){
-            curr_section->selectors.push_back(input);
+        if(selector_reoccurrence == -1 && input.size() > 0){
+            curr_section->add_selector(input);
         }
         input.clear();
         return;
@@ -38,25 +28,19 @@ void Css_parser::read_css() {
     if(input_char == '}'){
         selectors = true;
         input.clear();
-        sections.add_section();
-        curr_section = curr_section->next;
+        curr_section = sections_list->last->add_section();
         return;
     }
 
     if(input_char == ','){
-        if(global_attributes_section){
-            sections.add_section();
-            curr_section = curr_section->next;
-            global_attributes_section = false;
-        }
 
         if(input_char == input[input.size() - 1]) input.remove_last_char();
         input.remove_white_space_end();
 
-        int selector_reoccurance = curr_section->find_selector(input);
+        int selector_reoccurrence = curr_section->find_selector(input);
 
-        if(selector_reoccurance == -1 && input.size() > 0){
-            curr_section->selectors.push_back(input);
+        if(selector_reoccurrence == -1 && input.size() > 0){
+            curr_section->add_selector(input);
         }
         input.clear();
         return;
@@ -68,9 +52,9 @@ void Css_parser::read_css() {
         if(input_char == input[input.size() - 1]) input.remove_last_char();
         input.remove_white_space_end();
 
-        attribute_reoccurance = curr_section->find_property(input);
-        if(attribute_reoccurance == -1){
-            curr_section->properties.push_back(input);
+        attribute_reoccurrence = curr_section->find_property(input);
+        if(attribute_reoccurrence == -1){
+            curr_section->add_property(input);
         }
 
         input.clear();
@@ -108,24 +92,23 @@ void Css_parser::read_commands() {
         commands = false;
         star_counter = 0;
         input_char = '\0';
-        //check if everything was deleted
-        if(sections.size() == 0){
-            sections.add_section();
-            curr_section = sections.first;
+
+        //TODO handle when everything was deleted
+        if(sections_list->first->curr_section_arr_size == 0){
+//            sections.add_section();
+//            curr_section = sections.first;
             input.clear();
             return;
         }
 
-        curr_section = sections.last;
-        sections.add_section();
-        curr_section = curr_section->next;
+        curr_section = sections_list->last->add_section();
         input.clear();
         return;
     }
 
     if(input_char == '?' && command_part_counter < 2){
         std::cout<<"? == ";
-        std::cout<<sections.size()<<"\n";
+        std::cout<<sections_list->number_of_active_sections()<<"\n";
         input.clear();
         input_char = '\0';
         return;
@@ -187,67 +170,20 @@ void Css_parser::read_attribute() {
     if(input_char == input[input.size() - 1]) input.remove_last_char();
     input.remove_white_space_end();
 
-    if(attribute_reoccurance != -1){
-        curr_section->values[attribute_reoccurance] = input;
-        attribute_reoccurance = -1;
+    if(attribute_reoccurrence != -1){
+//        curr_section->values[attribute_reoccurrence] = input;
+        curr_section->add_value_position(input, attribute_reoccurrence);
+        attribute_reoccurrence = -1;
     }
     else
-        curr_section->values.push_back(input);
+        curr_section->add_value(input);
 
     if(input_char == '}'){
         selectors = true;
-        sections.add_section();
-        curr_section = curr_section->next;
+        curr_section = sections_list->last->add_section();
     }
 
     input.clear();
-}
-
-void Css_parser::handle_global_attribute() {
-    global_attribute_data();
-
-    global_attributes_section = true;
-
-    attribute_reoccurance = curr_section->find_property(global_attribute);
-    if(attribute_reoccurance != -1){
-        curr_section->values[attribute_reoccurance] = global_value;
-        attribute_reoccurance = -1;
-    }
-    else{
-        curr_section->properties.push_back(global_attribute);
-        curr_section->values.push_back(global_value);
-    }
-
-    global_value.clear();
-    global_attribute.clear();
-    input.clear();
-    input_char = '\0';
-}
-
-void Css_parser::global_attribute_data() {
-    bool global_value_flag = false;
-
-    input.remove_white_space_end();
-    int size = input.size() - 1;
-    for(int i = 0; i <= size; i++){
-        if(input[i] == ':'){
-            global_value_flag = true;
-            continue;
-        }
-        if(global_value_flag){
-            //checking for white space at the beginning of the value
-            if(global_value.size() == 0 && input[i] == ' ') continue;
-            temp_input[0] = input[i];
-            global_value += temp_input;
-            continue;
-        }
-        temp_input[0] = input[i];
-        global_attribute += temp_input;
-    }
-
-    global_value.remove_white_space_end();
-    global_attribute.remove_white_space_end();
-
 }
 
 void Css_parser::read_selector() {
@@ -255,11 +191,6 @@ void Css_parser::read_selector() {
 
     while(input_char != '{' && input_char != ','){
         input_char = (char)std::getchar();
-
-        if(input_char == ';') {
-            handle_global_attribute();
-            return;
-        }
 
         if(input_char == '?') {
             question_counter++;
@@ -279,8 +210,8 @@ void Css_parser::read_selector() {
 }
 
 void Css_parser::start() {
-    sections.add_section();
-    curr_section = sections[0];
+    sections_list->init_main_list();
+    curr_section = &sections_list->sections[0];
 
     //main loop
     while(std::cin){
@@ -300,19 +231,19 @@ void Css_parser::start() {
 void Css_parser::handle_rest_of_commands() {
     if(main_command == 'S'){
         if(command_part2 == "?" && command_part1_digit > 0){
-            Node* section = sections[--command_part1_digit];
+            Section* section = sections_list->i_index(--command_part1_digit);
             if(section != nullptr) {
                 std::cout<<command_part1_digit + 1<<","<<main_command<<",? == ";
-                std::cout<<section->selectors.size()<<"\n";
+                std::cout<<section->selectors_counter<<"\n";
                 return;
             }
         }
 
         if(command_part1_digit > 0 && command_part2_digit > 0){
-            Node* section = sections[--command_part1_digit];
+            Section* section = sections_list->i_index(--command_part1_digit);
             if(section == nullptr) return;
-            if(section->selectors.size() < command_part2_digit) return;
-            Mstring selector = section->selectors[--command_part2_digit];
+            if(section->selectors_counter < command_part2_digit) return;
+            Mstring selector = section->selector_index(--command_part2_digit);
             if(selector.size() == 0) return;
             std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2_digit + 1<<" == ";
             std::cout<<selector<<"\n";
@@ -322,14 +253,20 @@ void Css_parser::handle_rest_of_commands() {
         if(command_part2 == "?" && command_part1.size() > 0){
             int count = 0;
             std::cout<<command_part1<<","<<main_command<<",? == ";
-            int section_size = sections.size();
-            for(int i = 0; i < section_size; i++){
-                for(int j = 0; j < sections[i]->selectors.size(); j++){
-                    if(sections[i]->selectors[j] == command_part1){
-                        count++;
-                        break;
+            int active_sections = sections_list->number_of_active_sections();
+            mainList* curr_list = sections_list;
+
+            for(int i = 0; i < active_sections; i++){
+                for(int j = 0; j < ARR_LIST_SIZE; j++){
+                    if(!curr_list->is_used[j]) continue;
+                    for(int k = 0; k < curr_list->sections[j].selectors_counter; k++){
+                        if(curr_list->sections[j].selector_index(k) == command_part1){
+                            count++;
+                            break;
+                        }
                     }
                 }
+                curr_list = curr_list->next;
             }
             std::cout<<count<<"\n";
             return;
