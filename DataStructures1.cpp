@@ -265,7 +265,7 @@ Section::~Section() {
     }
 }
 
-void mainList::add_new_sections_tab() {
+Section* mainList::add_new_sections_tab() {
     mainList* new_list = new mainList();
     if(first == nullptr){
         first = new_list;
@@ -274,56 +274,92 @@ void mainList::add_new_sections_tab() {
         last->next = new_list;
         new_list->previous = last;
         last = new_list;
+        new_list->first = first;
+        new_list->last = last;
     }
     new_list->is_used[0] = true;
     new_list->curr_section_arr_size = 1;
+    return &new_list->sections[0];
 }
 
-void mainList::add_section() {
-    if (curr_section_arr_size == ARR_LIST_SIZE - 1){
+Section* mainList::add_section() {
+    if (curr_section_arr_size == ARR_LIST_SIZE){
         // switch to the new list node with new array
-        add_new_sections_tab();
-        return;
+        return add_new_sections_tab();
     }
 
     is_used[curr_section_arr_size] = true;
     curr_section_arr_size++;
+    return this->sections + curr_section_arr_size - 1;
 }
 
 void mainList::remove_last_section() {
-    if (curr_section_arr_size == 0){
-        // switch to the previous list node with new array
-        if (previous != nullptr){
-            previous->remove_last_section();
-            return;
+
+    mainList* node_delete = last;
+    int index_to_delete = 0;
+
+    for(int i = ARR_LIST_SIZE - 1; i >= 0; i--){
+        if(node_delete->is_used[i]){
+            index_to_delete = i;
+            break;
         }
     }
 
-    is_used[curr_section_arr_size] = false;
-    curr_section_arr_size--;
+    node_delete->is_used[index_to_delete] = false;
+    node_delete->curr_section_arr_size--;
+
+    if(node_delete->curr_section_arr_size <= 0){
+        if(node_delete->previous != nullptr){
+            node_delete->previous->next = node_delete->next;
+        }
+        if(node_delete->next != nullptr){
+            node_delete->next->previous = node_delete->previous;
+        }
+        delete node_delete->sections->block_data;
+        delete node_delete->sections->selectors;
+    }
 }
 
+//TODO check if after deleting section the array is empty
 void mainList::remove_section_index(size_t index) {
-    if (index >= ARR_LIST_SIZE){
-        // switch to the next list node with new array
-        if (next != nullptr){
-            next->remove_section_index(index - ARR_LIST_SIZE);
-            return;
-        }
+
+    mainList* node_delete = this;
+    while(index >= curr_section_arr_size){
+        node_delete = node_delete->next;
+        index -= curr_section_arr_size;
     }
 
-    is_used[index] = false;
-    curr_section_arr_size--;
+    for(int i = 0; i < index; i++){
+        if(!is_used[i]) index++;
+    }
+
+    node_delete->is_used[index] = false;
+    node_delete->curr_section_arr_size--;
+
+    if(node_delete->curr_section_arr_size <= 0){
+        if(node_delete->previous != nullptr){
+            node_delete->previous->next = node_delete->next;
+        }
+        if(node_delete->next != nullptr){
+            node_delete->next->previous = node_delete->previous;
+        }
+        delete node_delete->sections->block_data;
+        delete node_delete->sections->selectors;
+    }
 }
 
 Section* mainList::i_index(size_t index) {
 
-    if (index >= ARR_LIST_SIZE){
+    if (index >= curr_section_arr_size){
         // switch to the next list node with new array
         if (next != nullptr){
-            return next->i_index(index - ARR_LIST_SIZE);
+            return next->i_index(index - curr_section_arr_size);
         }
         else return nullptr;
+    }
+
+    for(int i = 0; i < index; i++){
+        if(!is_used[i]) index++;
     }
 
     return &sections[index];
@@ -332,6 +368,8 @@ Section* mainList::i_index(size_t index) {
 void mainList::init_main_list() {
     first = this;
     last = this;
+    curr_section_arr_size = 1;
+    is_used[0] = true;
 }
 
 mainList::mainList() {

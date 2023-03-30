@@ -2,7 +2,7 @@
 #define INC_1_CSS_DATASTRUCTURES_H
 #include "mstl.hxx"
 #include "DataStructures2.hxx"
-#define ARR_LIST_SIZE 8
+#define ARR_LIST_SIZE 3
 
 class Mstring : public Mvector<char> {
 public:
@@ -63,8 +63,8 @@ public:
     mainList* last = nullptr;
     size_t curr_section_arr_size = 0;
 
-    void add_new_sections_tab();
-    void add_section();
+    Section* add_new_sections_tab();
+    Section* add_section();
     void remove_last_section();
     void remove_section_index(size_t index);
     Section* i_index(size_t index);

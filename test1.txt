@@ -1,6 +1,8 @@
+{
 padding: none;
 color : blue;
 padding: blue;
+}
 h1.abc:nth-child() + h2:abc(), h5
 {
   color: blue ;
