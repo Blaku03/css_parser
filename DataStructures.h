@@ -53,7 +53,10 @@ public:
     void add_value(const Mstring& value_to_add);
     void add_value_position(const Mstring& value_to_add, size_t position);
     void add_property(const Mstring& property_to_add);
-    Mstring& selector_index(size_t index);
+    Mstring& selector_index(size_t index) const;
+    Mstring& value_index(size_t index) const;
+    Mstring& property_index(size_t index) const;
+    bool delete_property(const Mstring& property_to_delete);
 
     ~Section();
 };
@@ -71,7 +74,7 @@ public:
     Section* add_new_sections_tab();
     Section* add_section();
     void remove_last_section();
-    void remove_section_index(size_t index);
+    bool remove_section_index(size_t index);
     Section* i_index(size_t index);
     int number_of_active_sections() const;
     void init_main_list();

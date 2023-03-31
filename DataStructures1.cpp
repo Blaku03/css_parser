@@ -243,7 +243,7 @@ void Section::add_property(const Mstring& property_to_add) {
     }
 }
 
-Mstring& Section::selector_index(size_t index) {
+Mstring& Section::selector_index(size_t index) const {
     Node<Mstring> *current_node = selectors->first;
 
     for (size_t i = 0; i < index; i++) {
@@ -251,6 +251,54 @@ Mstring& Section::selector_index(size_t index) {
     }
 
     return current_node->data;
+}
+
+Mstring& Section::value_index(size_t index) const {
+    Node<Pair> *current_node = block_data->first;
+
+    for (size_t i = 0; i < index; i++) {
+        current_node = current_node->next;
+    }
+
+    return current_node->data.value;
+}
+
+Mstring& Section::property_index(size_t index) const {
+    Node<Pair> *current_node = block_data->first;
+
+    for (size_t i = 0; i < index; i++) {
+        current_node = current_node->next;
+    }
+
+    return current_node->data.property;
+}
+
+bool Section::delete_property(const Mstring &property_to_delete) {
+    int index = find_property(property_to_delete);
+    if(index == -1) return false;
+
+    Node<Pair> *current_node = block_data->first;
+
+    for (size_t i = 0; i < index; i++) {
+        current_node = current_node->next;
+    }
+
+    if(current_node->previous == nullptr){
+        block_data->first = current_node->next;
+        current_node->next->previous = nullptr;
+    }
+    else if(current_node->next == nullptr){
+        block_data->last = current_node->previous;
+        current_node->previous->next = nullptr;
+    }
+    else{
+        current_node->previous->next = current_node->next;
+        current_node->next->previous = current_node->previous;
+    }
+
+    delete current_node;
+    block_data_counter--;
+    return true;
 }
 
 Section::~Section() {
@@ -329,11 +377,11 @@ void mainList::remove_last_section() {
 }
 
 //TODO check if after deleting section the array is empty
-void mainList::remove_section_index(size_t index) {
+bool mainList::remove_section_index(size_t index) {
 
     mainList* node_delete = first;
     while(index >= curr_section_arr_size){
-        if(node_delete->next == nullptr) return;
+        if(node_delete->next == nullptr) return false;
         node_delete = node_delete->next;
         index -= curr_section_arr_size;
     }
@@ -361,6 +409,7 @@ void mainList::remove_section_index(size_t index) {
         delete node_delete->sections->block_data;
         delete node_delete->sections->selectors;
     }
+    return true;
 }
 
 Section* mainList::i_index(size_t index) {

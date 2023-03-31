@@ -210,6 +210,7 @@ void Css_parser::read_selector() {
 }
 
 void Css_parser::start() {
+    sections_list = new mainList;
     sections_list->init_main_list();
     curr_section = &sections_list->sections[0];
 
@@ -275,33 +276,37 @@ void Css_parser::handle_rest_of_commands() {
 
     if(main_command == 'A'){
         if(command_part2 == "?" && command_part1_digit > 0){
-            Node* section = sections[--command_part1_digit];
+            Section* section = sections_list->i_index(--command_part1_digit);
             if(section != nullptr) {
                 std::cout<<command_part1_digit + 1<<","<<main_command<<",? == ";
-                std::cout<<section->properties.size()<<"\n";
+                std::cout<<section->block_data_counter<<"\n";
             }
             return;
         }
 
         if(command_part1_digit > 0 && command_part2.size() > 0){
-            Node* section = sections[--command_part1_digit];
+            Section* section = sections_list->i_index(--command_part1_digit);
             if(section == nullptr) return;
             int index = section->find_property(command_part2);
             if(index != -1){
                 std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == ";
-                std::cout<<sections[command_part1_digit]->values[index]<<"\n";
+                std::cout<<section->value_index(index)<<"\n";
             }
             return;
         }
 
         if(command_part1.size() > 0 && command_part2 == "?"){
             int count = 0;
-            int section_size = sections.size();
+            int section_size = sections_list->number_of_active_sections();
+
             for(int i = 0; i < section_size; i++){
-                for(int j = 0; j < sections[i]->properties.size(); j++){
-                    if(sections[i]->properties[j] == command_part1){
-                        count++;
-                        break;
+                for(int j = 0; j < ARR_LIST_SIZE; j++){
+                    if(!sections_list->is_used[j]) continue;
+                    for(int k = 0; k < sections_list->sections[j].block_data_counter; k++){
+                        if(sections_list->sections[j].property_index(k) == command_part1){
+                            count++;
+                            break;
+                        }
                     }
                 }
             }
@@ -313,37 +318,43 @@ void Css_parser::handle_rest_of_commands() {
     }
 
     if(main_command == 'E'){
-        int section_size = sections.size();
-       for(int i = section_size - 1; i >= 0; i--){
-           for(int j = 0; j < sections[i]->selectors.size(); j++){
-               if(sections[i]->selectors[j] == command_part1){
-                   int index = sections[i]->find_property(command_part2);
-                   if(index != -1){
-                       std::cout<<command_part1<<","<<main_command<<","<<command_part2<<" == ";
-                       std::cout<<sections[i]->values[index]<<"\n";
-                       return;
-                   }
-               }
-           }
-       }
+        int section_size = sections_list->number_of_active_sections();
+
+        for(int i = 0; i < section_size; i++){
+            for(int j = 0; j < ARR_LIST_SIZE; j++){
+                if(!sections_list->is_used[j]) continue;
+                for(int k = 0; k < sections_list->sections[j].selectors_counter; k++){
+                    if(sections_list->sections[j].selector_index(k) == command_part1){
+                        int index = sections_list->sections[j].find_property(command_part2);
+                        if(index != -1){
+                            std::cout<<command_part1<<","<<main_command<<","<<command_part2<<" == ";
+                            std::cout<<sections_list->sections[j].value_index(index)<<"\n";
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     if(main_command == 'D'){
         if(command_part2 == "*"){
-            if(sections.size() == 0) return;
-            if(sections.pop(command_part1_digit - 1)){
-                std::cout<<command_part1_digit<<","<<main_command<<","<<command_part2<<" == deleted\n";
-                return;
+            if(sections_list->number_of_active_sections() == 0) return;
+            if(command_part1_digit > 0){
+                if(sections_list->remove_section_index(--command_part1_digit)){
+                    std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
+                    return;
+                }
             }
         }
 
         if(command_part2.size() > 0){
-            Node* section = sections[--command_part1_digit];
+            Section* section = sections_list->i_index(--command_part1_digit);
             if(section == nullptr) return;
 
             if(section->delete_property(command_part2)){
                 std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
-                if(section->properties.size() == 0) sections.pop(command_part1_digit);
+                if(section->block_data_counter == 0) sections_list->remove_section_index(command_part1_digit);
             }
         }
     }
