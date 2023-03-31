@@ -244,6 +244,7 @@ void Section::add_property(const Mstring& property_to_add) {
 }
 
 Mstring& Section::selector_index(size_t index) const {
+
     Node<Mstring> *current_node = selectors->first;
 
     for (size_t i = 0; i < index; i++) {
@@ -314,18 +315,18 @@ Section::~Section() {
         while(selectors->first != nullptr){
             Node<Mstring> *temp = selectors->first;
             selectors->first = selectors->first->next;
-//            delete temp;
+            delete temp;
         }
-//        delete selectors;
+        delete selectors;
     }
 
     if(block_data != nullptr){
         while(block_data->first != nullptr){
             Node<Pair> *temp = block_data->first;
             block_data->first = block_data->first->next;
-//            delete temp;
+            delete temp;
         }
-//        delete block_data;
+        delete block_data;
     }
 }
 
@@ -389,41 +390,44 @@ void mainList::remove_last_section() {
     }
 }
 
-//TODO check if after deleting section the array is empty
 bool mainList::remove_section_index(size_t index) {
 
     if(this == nullptr) return false;
 
     mainList* node_delete = first;
     if(first == nullptr) return false;
-    while(index >= curr_section_arr_size){
+    while(index >= node_delete->curr_section_arr_size){
         if(node_delete->next == nullptr) return false;
         node_delete = node_delete->next;
-        index -= curr_section_arr_size;
+        index -= node_delete->curr_section_arr_size;
     }
 
-    while(!is_used[index]) ++index;
+    while(!node_delete->is_used[index]) ++index;
 
     node_delete->is_used[index] = false;
     node_delete->curr_section_arr_size--;
 
     if(node_delete->curr_section_arr_size <= 0){
-        if(node_delete->previous != nullptr){
-            node_delete->previous->next = node_delete->next;
-        }
-        if(node_delete->next != nullptr){
-            node_delete->next->previous = node_delete->previous;
-        }
-        //check if node_delete is first
-        if(node_delete->first == node_delete){
-            node_delete->first = node_delete->next;
-        }
-        //same thing with last
-        if(node_delete->last == node_delete){
-            node_delete->last = node_delete->previous;
-        }
-        delete node_delete->sections->block_data;
-        delete node_delete->sections->selectors;
+//        if(node_delete->previous != nullptr){
+//            node_delete->previous->next = node_delete->next;
+//        }
+//        if(node_delete->next != nullptr){
+//            node_delete->next->previous = node_delete->previous;
+//        }
+//        //check if node_delete is first
+//        if(node_delete->first == node_delete){
+//            node_delete->first = node_delete->next;
+//        }
+//        //same thing with last
+//        if(node_delete->last == node_delete){
+//            node_delete->last = node_delete->previous;
+//        }
+//        last->last = last;
+//        delete node_delete->sections->block_data;
+//        delete node_delete->sections->selectors;
+//method of deleting empty section above apparently is bad make it better
+//by better i mean something new not the same thing
+
     }
     return true;
 }
