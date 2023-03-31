@@ -1,4 +1,5 @@
 #include "Css_parser.h"
+#include "math.h"
 
 void Css_parser::read_css() {
     if(selectors) read_selector();
@@ -94,9 +95,10 @@ void Css_parser::read_commands() {
         input_char = '\0';
 
         //TODO handle when everything was deleted
-        if(sections_list->first->curr_section_arr_size == 0){
-//            sections.add_section();
-//            curr_section = sections.first;
+        if(sections_list->curr_section_arr_size == 0){
+            sections_list = new mainList;
+            sections_list->init_main_list();
+            curr_section = &sections_list->sections[0];
             input.clear();
             return;
         }
@@ -255,7 +257,7 @@ void Css_parser::handle_rest_of_commands() {
             int count = 0;
             std::cout<<command_part1<<","<<main_command<<",? == ";
             int active_sections = sections_list->number_of_active_sections();
-            active_sections = active_sections / ARR_LIST_SIZE;
+            active_sections = ceil((double)active_sections / ARR_LIST_SIZE);
             mainList* curr_list = sections_list;
 
             for(int i = 0; i < active_sections; i++){
@@ -268,6 +270,7 @@ void Css_parser::handle_rest_of_commands() {
                         }
                     }
                 }
+                if(curr_list->next == nullptr) break;
                 curr_list = curr_list->next;
             }
             std::cout<<count<<"\n";
@@ -299,7 +302,7 @@ void Css_parser::handle_rest_of_commands() {
         if(command_part1.size() > 0 && command_part2 == "?"){
             int count = 0;
             int section_size = sections_list->number_of_active_sections();
-            section_size = section_size / ARR_LIST_SIZE;
+            section_size = ceil((double)section_size / ARR_LIST_SIZE);
 
             for(int i = 0; i < section_size; i++){
                 for(int j = 0; j < ARR_LIST_SIZE; j++){
@@ -321,7 +324,7 @@ void Css_parser::handle_rest_of_commands() {
 
     if(main_command == 'E'){
         int section_size = sections_list->number_of_active_sections();
-        section_size = section_size / ARR_LIST_SIZE;
+        section_size = ceil((double)section_size / ARR_LIST_SIZE);
 
         for(int i = section_size - 1; i >= 0; i--){
             for(int j = ARR_LIST_SIZE - 1; j >= 0; j--){
