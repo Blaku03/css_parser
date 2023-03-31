@@ -348,7 +348,7 @@ Section* mainList::add_new_sections_tab() {
 }
 
 Section* mainList::add_section() {
-    if (curr_section_arr_size == ARR_LIST_SIZE){
+    if (curr_section_arr_size >= ARR_LIST_SIZE){
         // switch to the new list node with new array
         return add_new_sections_tab();
     }
@@ -361,6 +361,8 @@ Section* mainList::add_section() {
 void mainList::remove_last_section() {
 
     mainList* node_delete = last;
+    if(last == nullptr) return;
+
     int index_to_delete = 0;
 
     for(int i = ARR_LIST_SIZE - 1; i >= 0; i--){
@@ -381,6 +383,7 @@ void mainList::remove_last_section() {
         if(node_delete->next != nullptr){
             node_delete->next->previous = node_delete->previous;
         }
+        last->last = last;
         delete node_delete->sections->block_data;
         delete node_delete->sections->selectors;
     }
@@ -389,7 +392,10 @@ void mainList::remove_last_section() {
 //TODO check if after deleting section the array is empty
 bool mainList::remove_section_index(size_t index) {
 
+    if(this == nullptr) return false;
+
     mainList* node_delete = first;
+    if(first == nullptr) return false;
     while(index >= curr_section_arr_size){
         if(node_delete->next == nullptr) return false;
         node_delete = node_delete->next;
@@ -424,6 +430,7 @@ bool mainList::remove_section_index(size_t index) {
 
 Section* mainList::i_index(size_t index) {
 
+    if(this == nullptr) return nullptr;
     if (index >= curr_section_arr_size){
         // switch to the next list node with new array
         if (next != nullptr){
@@ -441,6 +448,7 @@ Section* mainList::i_index(size_t index) {
 
 int mainList::number_of_active_sections() const {
     int counter = 0;
+
     mainList* curr_list = first;
     while(curr_list != nullptr){
        counter += (int)curr_list->curr_section_arr_size;

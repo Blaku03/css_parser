@@ -54,7 +54,7 @@ void Css_parser::read_css() {
         input.remove_white_space_end();
 
         attribute_reoccurrence = curr_section->find_property(input);
-        if(attribute_reoccurrence == -1){
+        if(attribute_reoccurrence == -1 && input.size() > 0){
             curr_section->add_property(input);
         }
 
@@ -94,7 +94,7 @@ void Css_parser::read_commands() {
         star_counter = 0;
         input_char = '\0';
 
-        if(sections_list->curr_section_arr_size == 0){
+        if(sections_list == nullptr || sections_list->curr_section_arr_size == 0){
             sections_list = new mainList;
             sections_list->init_main_list();
             curr_section = &sections_list->sections[0];
@@ -170,9 +170,9 @@ void Css_parser::read_attribute() {
 
     if(input_char == input[input.size() - 1]) input.remove_last_char();
     input.remove_white_space_end();
+    if(input.size() == 0) return;
 
     if(attribute_reoccurrence != -1){
-//        curr_section->values[attribute_reoccurrence] = input;
         curr_section->add_value_position(input, attribute_reoccurrence);
         attribute_reoccurrence = -1;
     }
@@ -350,9 +350,11 @@ void Css_parser::handle_rest_of_commands() {
 
     if(main_command == 'D'){
         if(command_part2 == "*"){
+            if(sections_list == nullptr) return;
             if(sections_list->number_of_active_sections() == 0) return;
             if(command_part1_digit > 0){
                 if(sections_list->remove_section_index(--command_part1_digit)){
+                    sections_list = sections_list->first;
                     std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
                     return;
                 }
@@ -360,12 +362,14 @@ void Css_parser::handle_rest_of_commands() {
         }
 
         if(command_part2.size() > 0){
+            if(sections_list == nullptr) return;
             Section* section = sections_list->i_index(--command_part1_digit);
             if(section == nullptr) return;
 
             if(section->delete_property(command_part2)){
                 std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
                 if(section->block_data_counter == 0) sections_list->remove_section_index(command_part1_digit);
+                sections_list = sections_list->first;
             }
         }
     }
