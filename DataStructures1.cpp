@@ -314,18 +314,18 @@ Section::~Section() {
         while(selectors->first != nullptr){
             Node<Mstring> *temp = selectors->first;
             selectors->first = selectors->first->next;
-            delete temp;
+//            delete temp;
         }
-        delete selectors;
+//        delete selectors;
     }
 
     if(block_data != nullptr){
         while(block_data->first != nullptr){
             Node<Pair> *temp = block_data->first;
             block_data->first = block_data->first->next;
-            delete temp;
+//            delete temp;
         }
-        delete block_data;
+//        delete block_data;
     }
 }
 
@@ -340,6 +340,7 @@ Section* mainList::add_new_sections_tab() {
         last = new_list;
         new_list->first = first;
         new_list->last = last;
+        first->last = last;
     }
     new_list->is_used[0] = true;
     new_list->curr_section_arr_size = 1;
@@ -464,6 +465,7 @@ mainList::mainList() {
 
 mainList::~mainList() {
     while(first != nullptr){
+        if(first == last) break;
         mainList* temp = first;
         first = first->next;
         delete temp;

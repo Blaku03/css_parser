@@ -4,7 +4,8 @@
 
 template<typename T>
 Node<T>::~Node(){
-    if(next != nullptr) delete next;
+//    delete next;
+    next = nullptr;
 }
 
 template<typename T>
@@ -24,6 +25,9 @@ template<typename T>
 LinkedList<T>::~LinkedList<T>() {
     while(first != nullptr){
         Node<T> *temp = first;
+        if(first == last){
+            break;
+        }
         first = first->next;
         delete temp;
     }

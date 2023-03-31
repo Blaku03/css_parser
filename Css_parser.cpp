@@ -94,7 +94,6 @@ void Css_parser::read_commands() {
         star_counter = 0;
         input_char = '\0';
 
-        //TODO handle when everything was deleted
         if(sections_list->curr_section_arr_size == 0){
             sections_list = new mainList;
             sections_list->init_main_list();
@@ -303,17 +302,20 @@ void Css_parser::handle_rest_of_commands() {
             int count = 0;
             int section_size = sections_list->number_of_active_sections();
             section_size = ceil((double)section_size / ARR_LIST_SIZE);
+            mainList* curr_list = sections_list;
 
             for(int i = 0; i < section_size; i++){
                 for(int j = 0; j < ARR_LIST_SIZE; j++){
-                    if(!sections_list->is_used[j]) continue;
-                    for(int k = 0; k < sections_list->sections[j].block_data_counter; k++){
-                        if(sections_list->sections[j].property_index(k) == command_part1){
+                    if(!curr_list->is_used[j]) continue;
+                    for(int k = 0; k < curr_list->sections[j].block_data_counter; k++){
+                        if(curr_list->sections[j].property_index(k) == command_part1){
                             count++;
                             break;
                         }
                     }
                 }
+                if(curr_list->next == nullptr) break;
+                curr_list = curr_list->next;
             }
 
 
@@ -325,21 +327,24 @@ void Css_parser::handle_rest_of_commands() {
     if(main_command == 'E'){
         int section_size = sections_list->number_of_active_sections();
         section_size = ceil((double)section_size / ARR_LIST_SIZE);
+        mainList* curr_list = sections_list->last;
 
         for(int i = section_size - 1; i >= 0; i--){
             for(int j = ARR_LIST_SIZE - 1; j >= 0; j--){
-                if(!sections_list->is_used[j]) continue;
-                for(int k = sections_list->sections[j].selectors_counter - 1; k >= 0; k--){
-                    if(sections_list->sections[j].selector_index(k) == command_part1){
-                        int index = sections_list->sections[j].find_property(command_part2);
+                if(!curr_list->is_used[j]) continue;
+                for(int k = curr_list->sections[j].selectors_counter - 1; k >= 0; k--){
+                    if(curr_list->sections[j].selector_index(k) == command_part1){
+                        int index = curr_list->sections[j].find_property(command_part2);
                         if(index != -1){
                             std::cout<<command_part1<<","<<main_command<<","<<command_part2<<" == ";
-                            std::cout<<sections_list->sections[j].value_index(index)<<"\n";
+                            std::cout<<curr_list->sections[j].value_index(index)<<"\n";
                             return;
                         }
                     }
                 }
             }
+            if(curr_list->previous == nullptr) break;
+            curr_list = curr_list->previous;
         }
     }
 

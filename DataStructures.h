@@ -2,7 +2,7 @@
 #define INC_1_CSS_DATASTRUCTURES_H
 #include "mstl.hxx"
 #include "DataStructures2.hxx"
-#define ARR_LIST_SIZE 3
+#define ARR_LIST_SIZE 8
 
 class Mstring : public Mvector<char> {
 public:

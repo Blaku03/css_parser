@@ -12,12 +12,18 @@ h1.abc:nth-child() + h2:abc(), h5
 
 h1:abc + h2:abc, h5 { color:red}
 
-h1::test p , h2{padding : none;background:white}
-
-padding: blue;
 ????
 ?
+color,A,?
+****
+h1::test p , h2, .ms-Label.is-required:after{padding : none;background:white;
+content : ' *'}
+????
+?
+.ms-Label.is-required:after,E,content
 1,A,?
 1,A,padding
 2,A,?
 2,A,color
+padding,A,?
+color,A,?
