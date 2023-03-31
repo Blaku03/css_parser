@@ -255,6 +255,7 @@ void Css_parser::handle_rest_of_commands() {
             int count = 0;
             std::cout<<command_part1<<","<<main_command<<",? == ";
             int active_sections = sections_list->number_of_active_sections();
+            active_sections = active_sections / ARR_LIST_SIZE;
             mainList* curr_list = sections_list;
 
             for(int i = 0; i < active_sections; i++){
@@ -298,6 +299,7 @@ void Css_parser::handle_rest_of_commands() {
         if(command_part1.size() > 0 && command_part2 == "?"){
             int count = 0;
             int section_size = sections_list->number_of_active_sections();
+            section_size = section_size / ARR_LIST_SIZE;
 
             for(int i = 0; i < section_size; i++){
                 for(int j = 0; j < ARR_LIST_SIZE; j++){
@@ -319,11 +321,12 @@ void Css_parser::handle_rest_of_commands() {
 
     if(main_command == 'E'){
         int section_size = sections_list->number_of_active_sections();
+        section_size = section_size / ARR_LIST_SIZE;
 
-        for(int i = 0; i < section_size; i++){
-            for(int j = 0; j < ARR_LIST_SIZE; j++){
+        for(int i = section_size - 1; i >= 0; i--){
+            for(int j = ARR_LIST_SIZE - 1; j >= 0; j--){
                 if(!sections_list->is_used[j]) continue;
-                for(int k = 0; k < sections_list->sections[j].selectors_counter; k++){
+                for(int k = sections_list->sections[j].selectors_counter - 1; k >= 0; k--){
                     if(sections_list->sections[j].selector_index(k) == command_part1){
                         int index = sections_list->sections[j].find_property(command_part2);
                         if(index != -1){

@@ -283,6 +283,14 @@ bool Section::delete_property(const Mstring &property_to_delete) {
         current_node = current_node->next;
     }
 
+    //check if current node is only node
+    if(current_node->previous == nullptr && current_node->next == nullptr){
+        block_data->first = nullptr;
+        block_data->last = nullptr;
+        delete current_node;
+        block_data_counter--;
+        return true;
+    }
     if(current_node->previous == nullptr){
         block_data->first = current_node->next;
         current_node->next->previous = nullptr;
@@ -365,6 +373,7 @@ void mainList::remove_last_section() {
     node_delete->curr_section_arr_size--;
 
     if(node_delete->curr_section_arr_size <= 0){
+        last = node_delete->previous;
         if(node_delete->previous != nullptr){
             node_delete->previous->next = node_delete->next;
         }
