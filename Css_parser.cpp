@@ -8,7 +8,7 @@ void Css_parser::read_css() {
         commands = true;
         input.clear();
         question_counter = 0;
-        sections_list->remove_last_section();
+        mainList::remove_last_section(last_list);
         return;
     }
 
@@ -29,7 +29,7 @@ void Css_parser::read_css() {
     if(input_char == '}'){
         selectors = true;
         input.clear();
-        curr_section = sections_list->last->add_section();
+        curr_section = sections_list->add_section(last_list);
         return;
     }
 
@@ -96,13 +96,13 @@ void Css_parser::read_commands() {
 
         if(sections_list == nullptr || sections_list->curr_section_arr_size == 0){
             sections_list = new mainList;
-            sections_list->init_main_list();
+            last_list = sections_list;
             curr_section = &sections_list->sections[0];
             input.clear();
             return;
         }
 
-        curr_section = sections_list->last->add_section();
+        curr_section = sections_list->add_section(last_list);
         input.clear();
         return;
     }
@@ -181,7 +181,7 @@ void Css_parser::read_attribute() {
 
     if(input_char == '}'){
         selectors = true;
-        curr_section = sections_list->last->add_section();
+        curr_section = sections_list->add_section(last_list);
     }
 
     input.clear();
@@ -212,7 +212,7 @@ void Css_parser::read_selector() {
 
 void Css_parser::start() {
     sections_list = new mainList;
-    sections_list->init_main_list();
+    last_list = sections_list;
     curr_section = &sections_list->sections[0];
 
     //main loop
@@ -327,7 +327,7 @@ void Css_parser::handle_rest_of_commands() {
     if(main_command == 'E'){
         int section_size = sections_list->number_of_active_sections();
         section_size = ceil((double)section_size / ARR_LIST_SIZE);
-        mainList* curr_list = sections_list->last;
+        mainList* curr_list = last_list;
 
         for(int i = section_size - 1; i >= 0; i--){
             for(int j = ARR_LIST_SIZE - 1; j >= 0; j--){
@@ -353,8 +353,7 @@ void Css_parser::handle_rest_of_commands() {
             if(sections_list == nullptr) return;
             if(sections_list->number_of_active_sections() == 0) return;
             if(command_part1_digit > 0){
-                if(sections_list->remove_section_index(--command_part1_digit)){
-                    sections_list = sections_list->first;
+                if(mainList::remove_section_index(--command_part1_digit, last_list, sections_list)){
                     std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
                     return;
                 }
@@ -368,8 +367,7 @@ void Css_parser::handle_rest_of_commands() {
 
             if(section->delete_property(command_part2)){
                 std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
-                if(section->block_data_counter == 0) sections_list->remove_section_index(command_part1_digit);
-                sections_list = sections_list->first;
+                if(section->block_data_counter == 0) mainList::remove_section_index(command_part1_digit, last_list, sections_list);
             }
         }
     }

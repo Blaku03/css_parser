@@ -4,7 +4,10 @@
 
 class Css_parser {
 
+    //sections_list should always point to the first list
     mainList* sections_list = nullptr;
+    mainList* last_list = nullptr;
+
     Section* curr_section = nullptr;
     Mstring input;
 

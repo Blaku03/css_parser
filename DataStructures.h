@@ -67,17 +67,14 @@ public:
     bool is_used[ARR_LIST_SIZE]{};
     mainList* next = nullptr;
     mainList* previous = nullptr;
-    mainList* first = nullptr;
-    mainList* last = nullptr;
     size_t curr_section_arr_size = 0;
 
-    Section* add_new_sections_tab();
-    Section* add_section();
-    void remove_last_section();
-    bool remove_section_index(size_t index);
+    static Section* add_new_sections_tab(mainList*& address_of_last);
+    Section* add_section(mainList*& address_of_last);
+    static void remove_last_section(mainList*& address_of_last);
+    static bool remove_section_index(size_t index, mainList*& address_of_last, mainList*& address_of_first);
     Section* i_index(size_t index);
-    int number_of_active_sections() const;
-    void init_main_list();
+    int number_of_active_sections();
     mainList();
     ~mainList();
 
