@@ -29,7 +29,7 @@ void Css_parser::read_css() {
     if(input_char == '}'){
         selectors = true;
         input.clear();
-        curr_section = sections_list->add_section(last_list);
+        curr_section = last_list->add_section(last_list);
         return;
     }
 
@@ -102,7 +102,7 @@ void Css_parser::read_commands() {
             return;
         }
 
-        curr_section = sections_list->add_section(last_list);
+        curr_section = last_list->add_section(last_list);
         input.clear();
         return;
     }
@@ -181,7 +181,7 @@ void Css_parser::read_attribute() {
 
     if(input_char == '}'){
         selectors = true;
-        curr_section = sections_list->add_section(last_list);
+        curr_section = last_list->add_section(last_list);
     }
 
     input.clear();
