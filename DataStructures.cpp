@@ -227,7 +227,7 @@ void Section::add_value_position(const Mstring& value_to_add, size_t position) {
 void Section::add_property(const Mstring& property_to_add) {
 
     block_data_counter++;
-    if(block_data == nullptr){
+    if(block_data == nullptr || block_data->first == nullptr || block_data->last == nullptr){
         block_data = new LinkedList<Pair>;
         Node<Pair> *new_node = new Node<Pair>;
         new_node->data.property = property_to_add;
@@ -346,9 +346,13 @@ Section* mainList::add_section(mainList*& address_of_last) {
         return add_new_sections_tab(address_of_last);
     }
 
-    is_used[curr_section_arr_size] = true;
+    int additional_index = 0;
+    while(is_used[curr_section_arr_size + additional_index]){
+        additional_index++;
+    }
+    is_used[curr_section_arr_size + additional_index] = true;
     curr_section_arr_size++;
-    return this->sections + curr_section_arr_size - 1;
+    return this->sections + curr_section_arr_size + additional_index - 1 ;
 }
 
 void mainList::remove_last_section(mainList*& address_of_last) {
@@ -381,8 +385,8 @@ bool mainList::remove_section_index(size_t index, mainList*& address_of_last, ma
 
     while(index >= node_delete->curr_section_arr_size){
         if(node_delete->next == nullptr) return false;
-        node_delete = node_delete->next;
         index -= node_delete->curr_section_arr_size;
+        node_delete = node_delete->next;
     }
 
     while(!node_delete->is_used[index]) ++index;
@@ -422,7 +426,7 @@ Section* mainList::i_index(size_t index) {
         else return nullptr;
     }
 
-    for(int i = 0; i < index; i++){
+    for(int i = 0; i <= index; i++){
         if(!is_used[i]) index++;
     }
 

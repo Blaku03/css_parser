@@ -3,3 +3,4 @@
 *.txt
 /TESTY_1-6
 .DS_Store
+*.sh
