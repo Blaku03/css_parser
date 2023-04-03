@@ -51,11 +51,11 @@ public:
     int find_selector(const Mstring& selector_to_find) const;
     void add_selector(const Mstring&  selector_to_add);
     void add_value(const Mstring& value_to_add);
-    void add_value_position(const Mstring& value_to_add, size_t position);
+    void add_value_position(const Mstring& value_to_add, int position);
     void add_property(const Mstring& property_to_add);
-    Mstring& selector_index(size_t index) const;
-    Mstring& value_index(size_t index) const;
-    Mstring& property_index(size_t index) const;
+    Mstring& selector_index(int index) const;
+    Mstring& value_index(int index) const;
+    Mstring& property_index(int index) const;
     bool delete_property(const Mstring& property_to_delete);
 
     ~Section();
@@ -67,13 +67,13 @@ public:
     bool is_used[ARR_LIST_SIZE]{};
     mainList* next = nullptr;
     mainList* previous = nullptr;
-    size_t curr_section_arr_size = 0;
+    int curr_section_arr_size = 0;
 
     static Section* add_new_sections_tab(mainList*& address_of_last);
-    Section* add_section(mainList*& address_of_last);
-    static void remove_last_section(mainList*& address_of_last);
-    static bool remove_section_index(size_t index, mainList*& address_of_last, mainList*& address_of_first);
-    Section* i_index(size_t index);
+    Section* add_section(mainList*& address_of_last, int& all_sections_counter);
+    static void remove_last_section(mainList*& address_of_last, int& all_sections_counter);
+    static bool remove_section_index(int index, mainList*& address_of_last, mainList*& address_of_first, int& all_active_sections);
+    Section* i_index(int index);
     int number_of_active_sections();
     mainList();
     ~mainList();

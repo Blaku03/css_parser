@@ -11,6 +11,7 @@ class Css_parser {
     Section* curr_section = nullptr;
     Mstring input;
 
+    int all_active_arr_sections = 1;
     bool commands = false;
     bool selectors = true;
     int attribute_reoccurrence = -1;
