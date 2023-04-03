@@ -47,8 +47,8 @@ public:
     int selectors_counter = 0;
     int block_data_counter = 0;
 
-    int find_property(const Mstring& property_to_find);
-    int find_selector(const Mstring& selector_to_find);
+    int find_property(const Mstring& property_to_find) const;
+    int find_selector(const Mstring& selector_to_find) const;
     void add_selector(const Mstring&  selector_to_add);
     void add_value(const Mstring& value_to_add);
     void add_value_position(const Mstring& value_to_add, size_t position);
