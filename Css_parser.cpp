@@ -7,7 +7,7 @@ void Css_parser::read_css() {
         commands = true;
         input.clear();
         question_counter = 0;
-        mainList::remove_last_section(last_list, all_active_arr_sections);
+        mainList::remove_last_section(last_list,sections_list, all_active_arr_sections);
         return;
     }
 
@@ -17,6 +17,7 @@ void Css_parser::read_css() {
         input.remove_white_space_end();
 
         int selector_reoccurrence  = curr_section->find_selector(input);
+
 
         if(selector_reoccurrence == -1 && input.size() > 0){
             curr_section->add_selector(input);
@@ -113,6 +114,9 @@ void Css_parser::read_commands() {
     if(input_char == '?' && command_part_counter < 2){
         std::cout<<"? == ";
         std::cout<<sections_list->number_of_active_sections()<<"\n";
+        if(sections_list->number_of_active_sections() == 6){
+            int x;
+        }
         input.clear();
         input_char = '\0';
         return;
@@ -317,7 +321,7 @@ void Css_parser::handle_rest_of_commands() {
                 curr_list = curr_list->next;
             }
 
-            if(command_part1 == "font-size" && count == 3){
+            if(command_part1 == "width" && count == 3){
                 int x;
             }
 

@@ -71,7 +71,7 @@ public:
 
     static Section* add_new_sections_tab(mainList*& address_of_last);
     Section* add_section(mainList*& address_of_last, int& all_sections_counter);
-    static void remove_last_section(mainList*& address_of_last, int& all_sections_counter);
+    static void remove_last_section(mainList*& address_of_last, mainList *&address_of_first, int& all_sections_counter);
     static bool remove_section_index(int index, mainList*& address_of_last, mainList*& address_of_first, int& all_active_sections);
     Section* i_index(int index);
     int number_of_active_sections();

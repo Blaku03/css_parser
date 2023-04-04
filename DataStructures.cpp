@@ -273,7 +273,7 @@ void Section::add_property(const Mstring &property_to_add)
 {
 
     block_data_counter++;
-    if (block_data == nullptr || block_data->first == nullptr || block_data->last == nullptr)
+    if (block_data == nullptr || block_data->first == nullptr)
     {
         block_data = new LinkedList<Pair>;
         Node<Pair> *new_node = new Node<Pair>;
@@ -426,7 +426,7 @@ Section *mainList::add_section(mainList *&address_of_last, int& all_sections_cou
     return this->sections + curr_section_arr_size + additional_index - 1;
 }
 
-void mainList::remove_last_section(mainList *&address_of_last, int& all_sections_counter)
+void mainList::remove_last_section(mainList *&address_of_last,mainList *&address_of_first, int& all_sections_counter)
 {
 
     if (address_of_last == nullptr)
@@ -445,11 +445,39 @@ void mainList::remove_last_section(mainList *&address_of_last, int& all_sections
     }
 
     node_delete->is_used[index_to_delete] = false;
+    node_delete->sections[index_to_delete].block_data = nullptr;
+    node_delete->sections[index_to_delete].selectors = nullptr;
+    node_delete->sections[index_to_delete].block_data_counter = 0;
+    node_delete->sections[index_to_delete].selectors_counter = 0;
     node_delete->curr_section_arr_size--;
 
+//    if (node_delete->curr_section_arr_size <= 0)
+//    {
+//        address_of_last = node_delete->previous;
+//        delete node_delete->sections->block_data;
+//        delete node_delete->sections->selectors;
+//        all_sections_counter--;
+//    }
     if (node_delete->curr_section_arr_size <= 0)
     {
-        address_of_last = node_delete->previous;
+        if (node_delete->previous != nullptr)
+        {
+            node_delete->previous->next = node_delete->next;
+        }
+        if (node_delete->next != nullptr)
+        {
+            node_delete->next->previous = node_delete->previous;
+        }
+        // check if node_delete is first
+        if (node_delete == address_of_first)
+        {
+            address_of_first = node_delete->next;
+        }
+        // same thing with last
+        if (node_delete == address_of_last)
+        {
+            address_of_last = node_delete->previous;
+        }
         delete node_delete->sections->block_data;
         delete node_delete->sections->selectors;
         all_sections_counter--;
@@ -468,8 +496,18 @@ bool mainList::remove_section_index(int index, mainList *&address_of_last, mainL
         if (node_delete == nullptr) return false;
     }
 
-    while (!node_delete->is_used[index])
-        ++index;
+    if(node_delete->sections[6].selectors != nullptr && node_delete->sections[6].selectors->first->data == ".menu_nodeStyle" && index == 6){
+        int x;
+    }
+
+//    while (!node_delete->is_used[index])
+//        ++index;
+
+    for (int i = 0; i <= index; i++)
+    {
+        if (!node_delete->is_used[i])
+            index++;
+    }
 
     node_delete->is_used[index] = false;
     node_delete->sections[index].block_data = nullptr;
