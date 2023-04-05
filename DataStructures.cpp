@@ -1,8 +1,8 @@
 #include "DataStructures.h"
 
-Mstring::Mstring(const char *user_char) : Mvector<char>()
+Mstring::Mstring(const char *user_string) : Mvector<char>()
 {
-    add_ms(user_char);
+    add_ms(user_string);
 }
 
 Mstring::Mstring(char user_char[]) : Mvector<char>()
@@ -10,7 +10,7 @@ Mstring::Mstring(char user_char[]) : Mvector<char>()
     add_ms(user_char);
 }
 
-Mstring::Mstring(const Mstring &user_mstring) : Mvector<char>()
+Mstring::Mstring(const Mstring &user_mstring) : Mvector<char>(user_mstring)
 {
     main_buffer = copy_array(user_mstring.main_buffer, user_mstring.current_size, false);
     number_of_elements = user_mstring.number_of_elements;
@@ -51,7 +51,7 @@ void Mstring::remove_last_char()
 void Mstring::remove_white_space_end()
 {
 
-    for (size_t i = number_of_elements - 1; i >= 0; i--)
+    for (int i = (int)number_of_elements - 1; i >= 0; i--)
     {
         if (main_buffer[i] != ' ')
         {
@@ -168,7 +168,7 @@ Mstring &Mstring::operator+=(const Mstring &user_mstring)
 std::ostream &operator<<(std::ostream &os, const Mstring &mstring)
 {
 
-    for (int i = 0; i < mstring.size(); i++)
+    for (unsigned int i = 0; i < mstring.size(); i++)
     {
         os << mstring.main_buffer[i];
     }
@@ -251,12 +251,12 @@ void Section::add_selector(const Mstring &selector_to_add)
     }
 }
 
-void Section::add_value(const Mstring &value_to_add)
+void Section::add_value(const Mstring &value_to_add) const
 {
     block_data->last->data.value = value_to_add;
 }
 
-void Section::add_value_position(const Mstring &value_to_add, int position)
+void Section::add_value_position(const Mstring &value_to_add, int position) const
 {
 
     Node<Pair> *current_node = block_data->first;
@@ -429,8 +429,7 @@ Section *mainList::add_section(mainList *&address_of_last, int& all_sections_cou
 void mainList::remove_last_section(mainList *&address_of_last,mainList *&address_of_first, int& all_sections_counter)
 {
 
-    if (address_of_last == nullptr)
-        return;
+    if (address_of_last == nullptr) return;
     mainList *node_delete = address_of_last;
 
     int index_to_delete = 0;
@@ -444,44 +443,7 @@ void mainList::remove_last_section(mainList *&address_of_last,mainList *&address
         }
     }
 
-    node_delete->is_used[index_to_delete] = false;
-    node_delete->sections[index_to_delete].block_data = nullptr;
-    node_delete->sections[index_to_delete].selectors = nullptr;
-    node_delete->sections[index_to_delete].block_data_counter = 0;
-    node_delete->sections[index_to_delete].selectors_counter = 0;
-    node_delete->curr_section_arr_size--;
-
-//    if (node_delete->curr_section_arr_size <= 0)
-//    {
-//        address_of_last = node_delete->previous;
-//        delete node_delete->sections->block_data;
-//        delete node_delete->sections->selectors;
-//        all_sections_counter--;
-//    }
-    if (node_delete->curr_section_arr_size <= 0)
-    {
-        if (node_delete->previous != nullptr)
-        {
-            node_delete->previous->next = node_delete->next;
-        }
-        if (node_delete->next != nullptr)
-        {
-            node_delete->next->previous = node_delete->previous;
-        }
-        // check if node_delete is first
-        if (node_delete == address_of_first)
-        {
-            address_of_first = node_delete->next;
-        }
-        // same thing with last
-        if (node_delete == address_of_last)
-        {
-            address_of_last = node_delete->previous;
-        }
-        delete node_delete->sections->block_data;
-        delete node_delete->sections->selectors;
-        all_sections_counter--;
-    }
+    handle_deleting_section(address_of_last, address_of_first, all_sections_counter, index_to_delete, node_delete);
 }
 
 bool mainList::remove_section_index(int index, mainList *&address_of_last, mainList *&address_of_first, int& all_sections_counter)
@@ -496,24 +458,26 @@ bool mainList::remove_section_index(int index, mainList *&address_of_last, mainL
         if (node_delete == nullptr) return false;
     }
 
-    if(node_delete->sections[6].selectors != nullptr && node_delete->sections[6].selectors->first->data == ".menu_nodeStyle" && index == 6){
-        int x;
-    }
-
-//    while (!node_delete->is_used[index])
-//        ++index;
-
     for (int i = 0; i <= index; i++)
     {
         if (!node_delete->is_used[i])
             index++;
     }
 
-    node_delete->is_used[index] = false;
-    node_delete->sections[index].block_data = nullptr;
-    node_delete->sections[index].selectors = nullptr;
-    node_delete->sections[index].block_data_counter = 0;
-    node_delete->sections[index].selectors_counter = 0;
+    handle_deleting_section(address_of_last, address_of_first, all_sections_counter, index, node_delete);
+
+    return true;
+}
+
+void mainList::handle_deleting_section(mainList *&address_of_last, mainList *&address_of_first, int &all_sections_counter, int index_to_delete, mainList* node_delete) {
+
+    node_delete->is_used[index_to_delete] = false;
+    delete node_delete->sections[index_to_delete].block_data;
+    delete node_delete->sections[index_to_delete].selectors;
+    node_delete->sections[index_to_delete].block_data = nullptr;
+    node_delete->sections[index_to_delete].selectors = nullptr;
+    node_delete->sections[index_to_delete].block_data_counter = 0;
+    node_delete->sections[index_to_delete].selectors_counter = 0;
     node_delete->curr_section_arr_size--;
 
     if (node_delete->curr_section_arr_size <= 0)
@@ -540,14 +504,10 @@ bool mainList::remove_section_index(int index, mainList *&address_of_last, mainL
         delete node_delete->sections->selectors;
         all_sections_counter--;
     }
-    return true;
 }
 
 Section *mainList::i_index(int index)
 {
-
-    if (this == nullptr)
-        return nullptr;
     if (index >= curr_section_arr_size)
     {
         // switch to the next list node with new array
@@ -594,10 +554,9 @@ mainList::mainList()
 
 mainList::~mainList()
 {
-    mainList *temp = nullptr;
     while (next != nullptr)
     {
-        temp = next;
+        mainList *temp = next;
         next = next->next;
         delete temp;
     }

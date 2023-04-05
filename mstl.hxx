@@ -17,7 +17,7 @@ template<typename T>
 T* Mvector<T>::copy_array(T *pointer_to_array_that_should_be_copied, size_t size_of_array, bool double_size) {
     T *copied_array = new T[double_size ? size_of_array * 2 : size_of_array];
 
-    for (int i = 0; i < size_of_array; i++) {
+    for (unsigned int i = 0; i < size_of_array; i++) {
         *(copied_array + i) = *(pointer_to_array_that_should_be_copied + i);
     }
 
@@ -25,7 +25,7 @@ T* Mvector<T>::copy_array(T *pointer_to_array_that_should_be_copied, size_t size
 }
 
 template<typename T>
-bool Mvector<T>::enough_buffer_space(size_t space_to_add) {
+bool Mvector<T>::enough_buffer_space(size_t space_to_add) const {
     return space_to_add + number_of_elements < current_size;
 }
 

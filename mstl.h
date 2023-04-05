@@ -11,7 +11,7 @@ protected:
     T *copy_array(T *pointer_to_array_that_should_be_copied, size_t size_of_array, bool double_size);
 
     //Check if buffer have enough space to take "x" elements
-    bool enough_buffer_space(size_t space_to_add);
+    bool enough_buffer_space(size_t space_to_add) const;
 
 public:
     T *main_buffer;
@@ -34,10 +34,10 @@ public:
     void clear();
 
     //Returns the value of i element of main buffer
-    T& i_element(size_t index_of_element);
-    T& operator[](size_t index_of_element);
-    const T& i_element(size_t index_of_element) const;
-    const T& operator[](size_t index_of_element) const;
+    T& i_element(size_t index);
+    T& operator[](size_t index);
+    const T& i_element(size_t index) const;
+    const T& operator[](size_t index) const;
     Mvector& operator=(const Mvector& user_vector);
     size_t size() const;
 

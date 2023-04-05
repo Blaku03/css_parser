@@ -54,9 +54,6 @@ void Css_parser::read_css() {
         input.remove_white_space_end();
 
         attribute_reoccurrence = curr_section->find_property(input);
-        if(input == "width"){
-            int x;
-        }
         if(attribute_reoccurrence == -1 && input.size() > 0){
             curr_section->add_property(input);
         }
@@ -114,9 +111,6 @@ void Css_parser::read_commands() {
     if(input_char == '?' && command_part_counter < 2){
         std::cout<<"? == ";
         std::cout<<sections_list->number_of_active_sections()<<"\n";
-        if(sections_list->number_of_active_sections() == 6){
-            int x;
-        }
         input.clear();
         input_char = '\0';
         return;
@@ -321,10 +315,6 @@ void Css_parser::handle_rest_of_commands() {
                 curr_list = curr_list->next;
             }
 
-            if(command_part1 == "width" && count == 3){
-                int x;
-            }
-
             std::cout<<command_part1<<","<<main_command<<",? == ";
             std::cout<<count<<"\n";
         }
@@ -359,9 +349,6 @@ void Css_parser::handle_rest_of_commands() {
             if(command_part1_digit > 0){
                 if(mainList::remove_section_index(--command_part1_digit, last_list, sections_list, all_active_arr_sections)){
                     std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
-                    if(command_part1_digit == 7){
-                        int x;
-                    }
                     return;
                 }
             }
@@ -371,10 +358,6 @@ void Css_parser::handle_rest_of_commands() {
             if(sections_list == nullptr) return;
             Section* section = sections_list->i_index(--command_part1_digit);
             if(section == nullptr) return;
-
-            if(command_part2 == "width"){
-                int x;
-            }
             if(section->delete_property(command_part2)){
                 std::cout<<command_part1_digit + 1<<","<<main_command<<","<<command_part2<<" == deleted\n";
                 if(section->block_data_counter == 0){

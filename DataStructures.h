@@ -8,8 +8,8 @@ class Mstring : public Mvector<char> {
 public:
     using Mvector::Mvector;
 
-    Mstring(const char* user_mstring);
-    Mstring(char user_string[]);
+    explicit Mstring(const char* user_string);
+    explicit Mstring(char user_char[]);
     Mstring(const Mstring& user_mstring);
     Mstring(Mstring&& user_mstring) noexcept;
 
@@ -50,8 +50,8 @@ public:
     int find_property(const Mstring& property_to_find) const;
     int find_selector(const Mstring& selector_to_find) const;
     void add_selector(const Mstring&  selector_to_add);
-    void add_value(const Mstring& value_to_add);
-    void add_value_position(const Mstring& value_to_add, int position);
+    void add_value(const Mstring& value_to_add) const;
+    void add_value_position(const Mstring& value_to_add, int position) const;
     void add_property(const Mstring& property_to_add);
     Mstring& selector_index(int index) const;
     Mstring& value_index(int index) const;
@@ -72,7 +72,8 @@ public:
     static Section* add_new_sections_tab(mainList*& address_of_last);
     Section* add_section(mainList*& address_of_last, int& all_sections_counter);
     static void remove_last_section(mainList*& address_of_last, mainList *&address_of_first, int& all_sections_counter);
-    static bool remove_section_index(int index, mainList*& address_of_last, mainList*& address_of_first, int& all_active_sections);
+    static bool remove_section_index(int index, mainList*& address_of_last, mainList*& address_of_first, int& all_sections_counter);
+    static void handle_deleting_section(mainList*& address_of_last, mainList*& address_of_first, int& all_sections_counter, int index_to_delete, mainList* node_delete);
     Section* i_index(int index);
     int number_of_active_sections();
     mainList();
